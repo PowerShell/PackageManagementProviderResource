@@ -1,16 +1,16 @@
-
+﻿
 This module contains the following DSC resources to allow configuration of packages and PowerShell modules.
 
-1)	NugetPackage – allow you to download packages from the Nuget source location (e.g., http://nuget.org/api/v2/) and install/uninstall the package on your computer.
-2)	PSModule - download PowerShell modules from the PowerShell Gallery, "PSGallery"  (e.g., https://www.powershellgallery.com/api/v2/ ) and install it on your computer
-3)	OneGetSource - Register/unregister a package source on your computer
+1)NugetPackage – allow you to download packages from the Nuget source location (e.g., http://nuget.org/api/v2/) and install/uninstall the package on your computer.
+2)PSModule - download PowerShell modules from the PowerShell Gallery, "PSGallery"  (e.g., https://www.powershellgallery.com/api/v2/ ) and install it on your computer.
+3)OneGetSource - Register/unregister a package source on your computer
 
 Installation
 
 To use the OneGetResource module,
-•	Copy the content under $env:ProgramFiles\WindowsPowerShell\Modules folder
+• Copy the content under $env:ProgramFiles\WindowsPowerShell\Modules folder
 To confirm installation:
-•	Run Get-DSCResource to see that NugetPackage, OneGetSource, PSModule are among the DSC Resources listed
+•Run Get-DSCResource to see that NugetPackage, OneGetSource, PSModule are among the DSC Resources listed
 
 Requirements:
 
@@ -18,7 +18,7 @@ This module requires the February Preview of Windows Management Framework (WMF 5
 
 Examples
 
-#A DSC configuration for installing Pester
+A DSC configuration for installing the Pester tool
 configuration Sample_InstallPester
 {
     param
