@@ -65,8 +65,10 @@ This is an example for installing the Pester tool.
     }
 
 
-  #Compile it
-  Sample_InstallPester -DestinationPath "$env:HomeDrive\test"
+Compile the configuration
 
-  #Run it
-  Start-DscConfiguration -path .\Sample_InstallPester -wait -Verbose -force  
+Sample_InstallPester -DestinationPath "$env:HomeDrive\test"
+
+Apply the configuration
+
+Start-DscConfiguration -path .\Sample_InstallPester -wait -Verbose -force  
