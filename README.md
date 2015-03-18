@@ -12,8 +12,8 @@ The OneGetProviderResource module contains the following Windows PowerShell Desi
 **NugetPackage** DSC resource has the following properties:
 <table>
     <tr>
-        <td>**Property**</td>
-        <td>**Description**</td>
+        <td> <b>Property</b> </td>
+        <td><b>Description</b> </td>
     </tr>
     <tr>
         <td>Name</td>
@@ -57,8 +57,8 @@ The OneGetProviderResource module contains the following Windows PowerShell Desi
 
 <table>
     <tr>
-        <td>**Property**</td>
-        <td>**Description**</td>
+        <td><b>Property</b></td>
+        <td><b>Description</b></td>
     </tr>
     <tr>
         <td>Name</td>
@@ -90,8 +90,8 @@ The OneGetProviderResource module contains the following Windows PowerShell Desi
 
 <table>
     <tr>
-        <td>**Property**</td>
-        <td>**Description**</td>
+        <td><b>Property</b></td>
+        <td><b>Description</b></td>
     </tr>
     <tr>
         <td>Name</td>
