@@ -15,9 +15,25 @@ Import-LocalizedData -BindingVariable LocalizedData -filename MSFT_OneGetSource.
 
 Import-Module -Name "$PSScriptRoot\..\OneGetHelper.psm1"
 
-#Return the current state of the resource
 function Get-TargetResource
 {
+    <#
+    .SYNOPSIS
+
+    This DSC resource provides a mechanism to register/unregister a package source on your computer. 
+
+    Get-TargetResource returns the current state of the resource.
+
+    .PARAMETER Name
+    Specifies the name of the package source to be registered or unregistered on your system.
+
+    .PARAMETER ProviderName
+    Specifies the name of the OneGet provider through which you can interop with the package source.
+
+    .PARAMETER SourceUri
+    Specifies the Uri of the package source.
+    #>
+
 	[CmdletBinding()]
 	[OutputType([System.Collections.Hashtable])]
 	param
@@ -98,9 +114,34 @@ function Get-TargetResource
     } 
 }
 
-#Validate whether the resource is currently in the desired state
 function Test-TargetResource
 {
+    <#
+    .SYNOPSIS
+
+    This DSC resource provides a mechanism to register/unregister a package source on your computer. 
+
+    Test-TargetResource validates whether the resource is currently in the desired state.
+
+    .PARAMETER Name
+    Specifies the name of the package source to be registered or unregistered on your system.
+
+    .PARAMETER ProviderName
+    Specifies the name of the OneGet provider through which you can interop with the package source.
+
+    .PARAMETER SourceUri
+    Specifies the Uri of the package source.
+
+    .PARAMETER Ensure
+    Determines whether the package source to be registered or unregistered.
+
+    .PARAMETER SourceCredential
+    Provides access to the package on a remote source. 
+
+    .PARAMETER InstallationPolicy
+    Determines whether you trust the package’s source.
+    #>
+
 	[CmdletBinding()]
 	[OutputType([System.Boolean])]
 	param
@@ -167,9 +208,34 @@ function Test-TargetResource
     }
 }
 
-#Get the resource to the desired state. "Make it so". 
 function Set-TargetResource
 {
+    <#
+    .SYNOPSIS
+
+    This DSC resource provides a mechanism to register/unregister a package source on your computer. 
+
+    Set-TargetResource sets the resource to the desired state. "Make it so".
+
+    .PARAMETER Name
+    Specifies the name of the package source to be registered or unregistered on your system.
+
+    .PARAMETER ProviderName
+    Specifies the name of the OneGet provider through which you can interop with the package source.
+
+    .PARAMETER SourceUri
+    Specifies the Uri of the package source.
+
+    .PARAMETER Ensure
+    Determines whether the package source to be registered or unregistered.
+
+    .PARAMETER SourceCredential
+    Provides access to the package on a remote source. 
+
+    .PARAMETER InstallationPolicy
+    Determines whether you trust the package’s source.
+    #>
+
 	[CmdletBinding()]
 	param
 	(

@@ -36,7 +36,7 @@ configuration Sample_InstallPester
         [string]$InstallationPolicy
     )
 
-    Import-DscResource -Module OneGetResource
+    Import-DscResource -Module OneGetProviderResource
 
     Node $NodeName
     {

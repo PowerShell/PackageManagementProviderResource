@@ -31,7 +31,7 @@ Describe -Name "NugetPackage Integration Test" -Tags "RI" {
     It "Start-DSC, Get-Dscconfiguration: Check Present" {
         
        # Compile the sample configuration to MOF and run Start-DscConfiguration
-       $module=Get-Module -Name "OneGetResource" -ListAvailable
+       $module=Get-Module -Name "OneGetProviderResource" -ListAvailable
        & "$($module.ModuleBase)\Examples\Sample_NuGet_InstallPackage.ps1"
 
         $getResult = Get-DscConfiguration 

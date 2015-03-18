@@ -16,6 +16,30 @@ Import-Module -Name "$PSScriptRoot\..\OneGetHelper.psm1"
 #Return the current state of the resource
 function Get-TargetResource
 {
+    <#
+    .SYNOPSIS
+
+    This DSC resource provides a mechanism to download PowerShell modules from the PowerShell
+    Gallery and install it on your computer. 
+
+    Get-TargetResource returns the current state of the resource.
+
+    .PARAMETER Name
+    Specifies the name of the PowerShell module to be installed or uninstalled.
+
+    .PARAMETER Repository
+    Specifies the name of the module source repository where the module can be found.
+
+    .PARAMETER RequiredVersion
+    Provides the version of the module you want to install or uninstall.
+
+    .PARAMETER MaximumVersion
+    Provides the maximum version of the module you want to install or uninstall.
+
+    .PARAMETER MinimumVersion
+    Provides the minimum version of the module you want to install or uninstall.
+    #>
+
 	[CmdletBinding()]
 	[OutputType([System.Collections.Hashtable])]
 	param
@@ -100,9 +124,37 @@ function Get-TargetResource
     }
 }
 
-#Validate whether the resource is currently in the desired state
 function Test-TargetResource
 {
+    <#
+    .SYNOPSIS
+
+    This DSC resource provides a mechanism to download PowerShell modules from the PowerShell
+    Gallery and install it on your computer. 
+
+    Test-TargetResource validates whether the resource is currently in the desired state.
+
+    .PARAMETER Ensure
+    Determines whether the module to be installed or uninstalled.
+
+    .PARAMETER Name
+    Specifies the name of the PowerShell module to be installed or uninstalled.
+
+    .PARAMETER Repository
+    Specifies the name of the module source repository where the module can be found.
+
+    .PARAMETER InstallationPolicy
+    Determines whether you trust the source repository where the module resides.
+
+    .PARAMETER RequiredVersion
+    Provides the version of the module you want to install or uninstall.
+
+    .PARAMETER MaximumVersion
+    Provides the maximum version of the module you want to install or uninstall.
+
+    .PARAMETER MinimumVersion
+    Provides the minimum version of the module you want to install or uninstall.
+    #>
 	[CmdletBinding()]
 	[OutputType([System.Boolean])]
 	param
@@ -152,10 +204,39 @@ function Test-TargetResource
         return $false
     }      
 }
-
-#Get the resource to the desired state. "Make it so". 
+ 
 function Set-TargetResource
 {
+    <#
+    .SYNOPSIS
+
+    This DSC resource provides a mechanism to download PowerShell modules from the PowerShell
+    Gallery and install it on your computer. 
+
+    Set-TargetResource sets the resource to the desired state. "Make it so".
+
+    .PARAMETER Ensure
+    Determines whether the module to be installed or uninstalled.
+
+    .PARAMETER Name
+    Specifies the name of the PowerShell module to be installed or uninstalled.
+
+    .PARAMETER Repository
+    Specifies the name of the module source repository where the module can be found.
+
+    .PARAMETER InstallationPolicy
+    Determines whether you trust the source repository where the module resides.
+
+    .PARAMETER RequiredVersion
+    Provides the version of the module you want to install or uninstall.
+
+    .PARAMETER MaximumVersion
+    Provides the maximum version of the module you want to install or uninstall.
+
+    .PARAMETER MinimumVersion
+    Provides the minimum version of the module you want to install or uninstall.
+    #>
+
 	[CmdletBinding()]
 	param
 	(
@@ -303,7 +384,7 @@ function Set-TargetResource
             Write-Verbose -Message ($localizedData.StartUnInstallModule -f $($Name))  
             
             #There is no Uninstall-Module cmdlet exists, so we will remove the ModuleBase folder as an uninstall operation
-            Microsoft.PowerShell.Management\Remove-Item $path -Force -Recurse -ErrorVariable ev
+            Microsoft.PowerShell.Management\Remove-Item -Path $path -Force -Recurse -ErrorVariable ev
         
             if($ev)
             {    
@@ -323,9 +404,29 @@ function Set-TargetResource
 }
 
 
-#Helper function to get the module along with the version and repository location check
 Function Get-RightModule
 {
+    <#
+    .SYNOPSIS
+
+    This is a helper function. It returns the modules that meet the specified versions and the repository requirements
+
+    .PARAMETER Name
+    Specifies the name of the PowerShell module.
+
+    .PARAMETER RequiredVersion
+    Provides the version of the module you want to install or uninstall.
+
+    .PARAMETER MaximumVersion
+    Provides the maximum version of the module you want to install or uninstall.
+
+    .PARAMETER MinimumVersion
+    Provides the minimum version of the module you want to install or uninstall.
+   
+    .PARAMETER Repository
+    Specifies the name of the module source repository where the module can be found.
+    #>
+
     param
     (
         [parameter(Mandatory = $true)]
@@ -449,11 +550,17 @@ Function Get-RightModule
 
     return $returnVal     
 }
-
-
-#Helper function to retrive the module's repository  
+ 
 Function Get-ModuleRepositoryName
 {
+    <#
+    .SYNOPSIS
+
+    This is a helper function that returns the module's repository name
+
+    .PARAMETER Module
+    Specifies the name of the PowerShell module.
+    #>
     Param
     (
         [parameter(Mandatory = $true)]

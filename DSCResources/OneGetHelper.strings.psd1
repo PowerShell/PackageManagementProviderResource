@@ -17,5 +17,6 @@ ConvertFrom-StringData @'
     VersionError=MinimumVersion should be less than the maximumVersion. The MinimumVersion or maximumVersion cannot be used with the RequiredVersion in the same command.
     UnexpectedArgument=Unexpected argument type: '{0}'
     SourceNotFound=Source '{0}' not found. Please make sure you register it. 
+    CallingFunction="Call a function '{0}'".
 ###PSLOC
 '@

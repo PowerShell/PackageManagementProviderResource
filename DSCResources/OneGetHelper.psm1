@@ -13,9 +13,20 @@
 
 Import-LocalizedData -BindingVariable LocalizedData -filename OneGetHelper.strings.psd1
 
-#Helper function to extract parameters from a given argument array
  Function ExtractArguments
 {
+    <#
+    .SYNOPSIS
+
+    This is a helper function that extract the parameters from a given table. 
+
+    .PARAMETER FunctionBoundParameters
+    Specifies the hashtable containing a set of parameters to be extracted
+
+    .PARAMETER ArgumentNames
+    Specifies A list of arguments you want to extract
+    #>
+
     Param
     (
         [parameter(Mandatory = $true)]
@@ -26,6 +37,8 @@ Import-LocalizedData -BindingVariable LocalizedData -filename OneGetHelper.strin
         [parameter(Mandatory = $true)]
         [System.String[]]$ArgumentNames
     )
+
+    Write-Verbose -Message ("$LocalizedData.CallingFunction -f $($MyInvocation.mycommand)")
 
     $returnValue=@{}
 
@@ -41,10 +54,27 @@ Import-LocalizedData -BindingVariable LocalizedData -filename OneGetHelper.strin
     return $returnValue
  }
 
-
-#Utility to throw an errorrecord
 function ThrowError
 {
+    <#
+    .SYNOPSIS
+
+    This is a helper function that throws an error. 
+
+    .PARAMETER ExceptionName
+    Specifies the type of errors, e.g. System.ArgumentException
+
+    .PARAMETER ExceptionMessage
+    Specifies the exception message
+
+    .PARAMETER ErrorId
+    Specifies an identifier of the error
+
+    .PARAMETER ErrorCategory
+    Specifies the error category, e.g., InvalidArgument defined in System.Management.Automation. 
+
+    #>
+
     param
     (        
         [parameter(Mandatory = $true)]
@@ -67,15 +97,28 @@ function ThrowError
         [System.Management.Automation.ErrorCategory]
         $ErrorCategory
     )
+    
+    Write-Verbose -Message ("$LocalizedData.CallingFunction -f $($MyInvocation.mycommand)")
         
     $exception   = New-Object -TypeName $ExceptionName -ArgumentList $ExceptionMessage;
     $errorRecord = New-Object -TypeName System.Management.Automation.ErrorRecord -ArgumentList ($exception, $ErrorId, $ErrorCategory, $null)    
     throw $errorRecord
 }
 
-#Helper function  to validate arguments
 Function ValidateArgument
 {
+    <#
+    .SYNOPSIS
+
+    This is a helper function that validates the arguments. 
+
+    .PARAMETER Argument
+    Specifies the argument to be validated.
+
+    .PARAMETER Type
+    Specifies the type of argument.
+    #>
+
     [CmdletBinding()]
     param
     (
@@ -87,6 +130,8 @@ Function ValidateArgument
         [ValidateNotNullOrEmpty()]
         [String]$Type
     )
+
+    Write-Verbose -Message ("$LocalizedData.CallingFunction -f $($MyInvocation.mycommand)")
 
     switch ($Type)
     {
@@ -156,9 +201,23 @@ Function ValidateArgument
      }           
 }
 
-#Helper function to validate the version arguments
 Function ValidateVersionArgument
 {
+    <#
+    .SYNOPSIS
+
+    This is a helper function that does the version validation. 
+
+    .PARAMETER RequiredVersion
+    Provides the required version.
+
+    .PARAMETER MaximumVersion
+    Provides the maximum version.
+
+    .PARAMETER MinimumVersion
+    Provides the minimum version.
+    #>
+
     [CmdletBinding()]
     param
     (
@@ -168,6 +227,8 @@ Function ValidateVersionArgument
 
     )
          
+    Write-Verbose -Message ("$LocalizedData.CallingFunction -f $($MyInvocation.mycommand)")
+
     $isValid = $false
          
     #Case 1: No further check required if a user provides either none or one of these: minimumVersion, maximumVersion, and requiredVersion
@@ -196,10 +257,18 @@ Function ValidateVersionArgument
     }
 }
 
-  
-#Helper function to retrive the InstallationPolicy from the repository
 Function Get-InstallationPolicy
 {
+    <#
+    .SYNOPSIS
+
+    This is a helper function that retrives the InstallationPolicy from the given repository. 
+
+    .PARAMETER RepositoryName
+    Provides the repository Name.
+
+    #>
+
     Param
     (
         [parameter(Mandatory = $true)]
@@ -207,7 +276,8 @@ Function Get-InstallationPolicy
         [System.String]$RepositoryName
     )
 
-  
+    Write-Verbose -Message ("$LocalizedData.CallingFunction -f $($MyInvocation.mycommand)")
+
     $repositoryobj = OneGet\Get-PackageSource -Name $RepositoryName -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
 
     if ($repositoryobj)

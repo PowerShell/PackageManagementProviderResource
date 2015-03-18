@@ -36,7 +36,7 @@ configuration Sample_NuGet_InstallPackage
         [string]$InstallationPolicy
     )
 
-    Import-DscResource -Module OneGetResource
+    Import-DscResource -Module OneGetProviderResource
 
     Node $NodeName
     {
