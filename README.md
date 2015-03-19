@@ -152,8 +152,11 @@ You can repeat these commands similarly for testing PSModule and OneGetSource DS
 **Contributing to the Code**
 
 You are welcome to contribute to this project. There are many ways to contribute:
+
 1.	Submit a bug report via [Issues]( https://github.com/WindowsPowerShell/OneGetResource/issues). For a guide to submitting good bug reports, please read [Painless Bug Tracking](http://www.joelonsoftware.com/articles/fog0000000029.html).
+
 2.	Verify fixes for bugs.
+
 3.	Submit your fixes for a bug. Before submitting, please make sure you have:
  - Performed code reviews of your own
  - Updated the test cases if needed
