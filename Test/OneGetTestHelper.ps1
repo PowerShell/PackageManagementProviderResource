@@ -13,17 +13,17 @@
 <# Run Test cases Pre-Requisite: 
   1. After download the OngetGet DSC resources modules, it is expected the following are available under your current directory. For example,
 
-    C:\Program Files\WindowsPowerShell\Modules\OneGetResource\
+    C:\Program Files\WindowsPowerShell\Modules\OneGetProviderResource\
         
         DSCResources
         Examples
         Test
-        OneGetResource.psd1
+        OneGetProviderResource.psd1
 #>
 
 #Define the variables
 
-$CurrentDirectory            = Split-Path -Parent $MyInvocation.MyCommand.Path
+$CurrentDirectory            = Split-Path -Path $MyInvocation.MyCommand.Path -Parent
 
 $script:LocalRepositoryPath  = "$CurrentDirectory\LocalRepository"
 $script:LocalRepositoryPath1 = "$CurrentDirectory\LocalRepository1"
@@ -39,6 +39,16 @@ $script:Module               = $null
 #A DSC configuration for installing Pester
 configuration Sample_InstallPester
 {
+    <#
+    .SYNOPSIS
+
+    This is a DSC configution that install/uninstall the Pester tool from the nuget. 
+
+    .PARAMETER DestinationPath
+    Provides the file folder where the Pester to be installed.
+
+    #>
+
     param
     (
         #Destination path for the package
@@ -46,7 +56,7 @@ configuration Sample_InstallPester
         [string]$DestinationPath       
     )
 
-    Import-DscResource -Module OneGetResource
+    Import-DscResource -Module OneGetProviderResource
 
     Node "localhost"
     {
@@ -74,35 +84,63 @@ configuration Sample_InstallPester
     } 
 }
 
-# A helper function to download and install the pester tool
 Function InstallPester
 {
-    Write-Host "Deploying Pester tool to progarm files directory..."
+    <#
+    .SYNOPSIS
 
-    # Get the module path where to be installed
-    $module = Get-Module -Name "OneGetResource" -ListAvailable
+    This function downloads and installs the pester tool. 
 
-    # Compile it
-    Sample_InstallPester -DestinationPath "$($module.ModuleBase)\test"
+    #>
 
-    # Run it
-    Start-DscConfiguration -path .\Sample_InstallPester -wait -Verbose -force 
+    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
 
-    $result = Get-DscConfiguration 
+    # Check if the Pester have installed already under Program Files\WindowsPowerShell\Modules\Pester
+    $pester = Get-Module -Name "Pester" -ListAvailable
+
+    if ($pester.count -ge 1)
+    {
+        Write-Verbose -Message "Pester has already installed under $($pester.ModuleBase)" 
+
+        Import-module -Name "$($pester.ModuleBase)\Pester.psd1"          
+    }
+    else
+    {
+        # Get the module path where to be installed
+        $module = Get-Module -Name "OneGetProviderResource" -ListAvailable
+
+        # Compile it
+        Sample_InstallPester -DestinationPath "$($module.ModuleBase)\test"
+
+        # Run it
+        Start-DscConfiguration -path .\Sample_InstallPester -wait -Verbose -force 
+
+        $result = Get-DscConfiguration 
     
-    #import the Pester tool. Note:$result.Name is something like 'Pester.3.3.5'
-    Import-module "$($module.ModuleBase)\test\$($result[1].Name)\tools\Pester.psd1"
+        #import the Pester tool. Note:$result.Name is something like 'Pester.3.3.5'
+        Import-module -Name "$($module.ModuleBase)\test\$($result[1].Name)\tools\Pester.psd1"
+    }
  }
 
-# A helper function to setup a local repostiory/package resouce to speed up the test execution
+
 Function SetupLocalRepository
 {
+    <#
+    .SYNOPSIS
+
+    This is a helper function to setup a local repostiory/package resouce to speed up the test execution
+
+    .PARAMETER PSModule
+    Provides whether you are testing PowerShell Modules or Packages.
+
+    #>
+
     param
 	(
         [Switch]$PSModule
     )
 
-    Write-Host "SetupLocalRepository..."
+    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
     
     # Create the LocalRepository path if does not exist
     if (-not ( Test-Path -Path $script:LocalRepositoryPath))
@@ -138,10 +176,16 @@ Function SetupLocalRepository
     Copy-Item -Path $script:LocalRepositoryPath -Destination $script:LocalRepositoryPath3 -Recurse -force
 }
 
-# A setup helper function for a PSModule test
 Function SetupPSModuleTest
 {
-    Write-Host "Calling SetupPSModuleTest ..."
+    <#
+    .SYNOPSIS
+
+    This is a helper function for a PSModule test
+
+    #>
+
+    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
 
     #Need to import resource MSFT_PSModule.psm1
     Import-ModulesToSetupTest -ModuleChildPath  "MSFT_PSModule\MSFT_PSModule.psm1"  
@@ -152,10 +196,15 @@ Function SetupPSModuleTest
     InstallPester      
 }
 
-# A setup helper function for a Nuget test
 Function SetupNugetTest
 {
-    Write-Host "Calling SetupNugetTest ..."
+    <#
+    .SYNOPSIS
+
+    This is a helper function for a Nuget test
+
+    #>
+    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
 
     #Import MSFT_NugetPackage.psm1 module
     Import-ModulesToSetupTest -ModuleChildPath  "MSFT_NugetPackage\MSFT_NugetPackage.psm1"
@@ -168,10 +217,15 @@ Function SetupNugetTest
     InstallPester
  }
 
-# A setup helper function for a OnegetSource test
 Function SetupOneGetSourceTest
- {
-    Write-Host "Calling SetupOneGetSourceTest ..."
+{
+    <#
+    .SYNOPSIS
+
+    This is a helper function for a OnegetSource test
+
+    #>
+    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
 
     Import-ModulesToSetupTest -ModuleChildPath  "MSFT_OneGetSource\MSFT_OneGetSource.psm1"
 
@@ -179,11 +233,19 @@ Function SetupOneGetSourceTest
 
     # Install Pester and import it
     InstallPester 
- }
+}
 
-#A help function to regsiter a module
 Function Import-ModulesToSetupTest
 {
+    <#
+    .SYNOPSIS
+
+    This is a helper function to import modules
+    
+    .PARAMETER ModuleChildPath
+    Provides the child path of the module. The parent path should be the same as the DSC resource.
+    #>
+
     param
     (
     	[parameter(Mandatory = $true)]
@@ -192,23 +254,43 @@ Function Import-ModulesToSetupTest
 
     )
   
-    Write-Verbose "Calling Import-ModulesToSetupTest"
+    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
 
     $moduleChildPath="DSCResources\$($ModuleChildPath)"
 
-    $script:Module = Get-Module -Name "OneGetResource" -ListAvailable
+    $script:Module = Get-Module -Name "OneGetProviderResource" -ListAvailable
 
     $modulePath = Microsoft.PowerShell.Management\Join-Path -Path $script:Module.ModuleBase -ChildPath $moduleChildPath
 
     Import-Module -Name "$($modulePath)"  
     
-    #The modules in the below tests will be installed at the same location as OneGetResource. e.g., c:\Program Files\WindowsPowerShell\Modules
+    #The modules in the below tests will be installed at the same location as OneGetProviderResource. e.g., c:\Program Files\WindowsPowerShell\Modules
     $script:InstallationFolder = Split-Path -Path $script:Module.ModuleBase -Parent   
  }
 
-#A helper function to register/unregister the psrepository 
 function RegisterRepository
 {
+    <#
+    .SYNOPSIS
+
+    This is a helper function to register/unregister the PowerShell repository
+
+    .PARAMETER Name
+    Provides the repository Name.
+
+    .PARAMETER SourceLocation
+    Provides the source location.
+
+    .PARAMETER PublishLocation
+    Provides the publish location.
+
+    .PARAMETER InstallationPolicy
+    Determines whether you trust the source repository.
+
+    .PARAMETER Ensure
+    Determines whether the repository to be registered or unregistered.
+    #>
+
     param
 	(
 		[parameter(Mandatory = $true)]
@@ -216,7 +298,7 @@ function RegisterRepository
 		$Name,
 
 		[System.String]
-		$SourceLocation=$script:LocalRepositoryPath,   #Need to update this once we move on to Nuget API V3
+		$SourceLocation=$script:LocalRepositoryPath,
    
    		[System.String]
 		$PublishLocation=$script:LocalRepositoryPath,
@@ -232,11 +314,12 @@ function RegisterRepository
 
     Write-Verbose -Message "RegisterRepository called" 
 
-    # Calling the following to trigger Bootstrap provider for the first use OneGet
+    # Calling the following to trigger Bootstrap provider for the first time use OneGet
     Get-PackageSource -ProviderName Nuget -ForceBootstrap -WarningAction Ignore 
 
     $psrepositories = PowerShellGet\get-PSRepository
     $registeredRepository = $null
+    $isRegistered = $false
 
     #Check if the repository has been registered already
     foreach ($repository in $psrepositories)
@@ -273,9 +356,17 @@ function RegisterRepository
     }            
 }
 
-#Reset back the test machine enviorment
 function RestoreRepository
 {
+    <#
+    .SYNOPSIS
+
+    This is a helper function to reset back your test environment.
+
+    .PARAMETER RepositoryInfo
+    Provides the hashtable containing the repository information used for regsitering the repositories.
+    #>
+
     param
 	(
         [parameter(Mandatory = $true)]
@@ -306,9 +397,16 @@ function RestoreRepository
     }   
 }
 
-#Some psmodule tests require no other repositories are registered, the below function helps to do so
 function CleanupRepository
 {
+    <#
+    .SYNOPSIS
+
+    This is a helper function for the test setp. Sometimes tests require no other repositories
+    are registered, this function helps to do so
+
+    #>
+
     Write-Verbose -Message "CleanupRepository called" 
 
     $returnVal = @{}
@@ -340,9 +438,35 @@ function CleanupRepository
     Return $returnVal   
 }
 
-#A test helper to register a package source
 function RegisterPackageSource
 {
+    <#
+    .SYNOPSIS
+
+    This is a helper function to register/unregister the package source
+
+    .PARAMETER Name
+    Provides the package source Name.
+
+    .PARAMETER SourceUri
+    Provides the source location.
+
+    .PARAMETER PublishLocation
+    Provides the publish location.
+
+    .PARAMETER Credential
+    Provides the access to the package on a remote source.
+
+    .PARAMETER InstallationPolicy
+    Determines whether you trust the source repository.
+
+    .PARAMETER ProviderName
+    Provides the package provider name.
+
+    .PARAMETER Ensure
+    Determines whether the package source to be registered or unregistered.
+    #>
+
     param
 	(
 		[parameter(Mandatory = $true)]
@@ -396,9 +520,23 @@ function RegisterPackageSource
     Remove-Module -Name  "MSFT_OneGetSource"  -Force -ErrorAction SilentlyContinue         
 }
 
-#A test helper to unregister a package source
 Function UnRegisterSource
 {
+    <#
+    .SYNOPSIS
+
+    This is a helper function to unregister a particular package source
+
+    .PARAMETER Name
+    Provides the package source Name.
+
+    .PARAMETER SourceUri
+    Provides the source location.
+
+    .PARAMETER ProviderName
+    Provides the package provider name.
+    #>
+
     param
     (
         [parameter(Mandatory = $true)]
@@ -412,6 +550,8 @@ Function UnRegisterSource
 		$ProviderName="Nuget"
     )
 
+    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
+
     $getResult = MSFT_OneGetSource\Get-TargetResource -Name $name -providerName $ProviderName -SourceUri $SourceUri -Verbose
 
     if ($getResult.Ensure -ieq "Present")
@@ -421,9 +561,17 @@ Function UnRegisterSource
     }
 }
 
-#A test helper to unregister a package source
 Function UnRegisterAllSource
 {
+    <#
+    .SYNOPSIS
+
+    This is a helper function to unregister all the package source on the machine
+
+    #>
+
+    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
+
     $sources = OneGet\Get-PackageSource
 
     foreach ($source in $sources)
@@ -443,18 +591,48 @@ Function UnRegisterAllSource
     }
 }
 
-
-#A test helper to get a credential
-function Get-Credential($user, $password)
+function Get-Credential
 {
-    $secPassword = ConvertTo-SecureString $password -AsPlainText -Force
-    $cred = New-Object System.Management.Automation.PSCredential($user, $secPassword)
-    $cred
+    <#
+    .SYNOPSIS
+
+    This is a helper function for the cmdlets testing where requires PSCredential
+
+    #>
+
+    param(
+        [System.String]
+        $User, 
+
+        [System.String]
+        $Password
+    )
+
+    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
+
+    $secPassword = ConvertTo-SecureString -String $Password -AsPlainText -Force
+    $cred = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ($User, $secPassword)
+    return $cred
 }
 
-# A helper function to create test modules for testing purpose
 function CreateTestModuleInLocalRepository
 {
+    <#
+    .SYNOPSIS
+
+    This is a helper function that generates test packages/modules and publishes them to a local repository.
+    Please note that it only generates manifest files just for testing purpose.
+
+    .PARAMETER ModuleName
+    Provides the module Name to be generated.
+
+    .PARAMETER ModuleVersion
+    Provides the module version to be generated.
+
+    .PARAMETER LocalRepository
+    Provides the local repository Name.
+    #>
+
     param(
         [System.String]
         $ModuleName, 
@@ -466,13 +644,15 @@ function CreateTestModuleInLocalRepository
         $LocalRepository
     )
 
+    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
+
     # Return if the package already exists
     if (Test-path -path "$($script:Module.ModuleBase)\test\$($LocalRepository)\$($ModuleName).$($ModuleVersion).nupkg")
     {
         return
     }
 
-    # Get the parent 'OneGetResource' module path
+    # Get the parent 'OneGetProviderResource' module path
     $parentModulePath = Microsoft.PowerShell.Management\Split-Path -Path $script:Module.ModuleBase -Parent
 
     $modulePath = Microsoft.PowerShell.Management\Join-Path -Path $parentModulePath -ChildPath "$ModuleName"
@@ -499,5 +679,5 @@ function CreateTestModuleInLocalRepository
     }
 
     # Remove the module under modulepath once we published it to the local repository
-    Microsoft.PowerShell.Management\Remove-item $modulePath -Recurse -Force -ErrorAction SilentlyContinue
+    Microsoft.PowerShell.Management\Remove-item -Path $modulePath -Recurse -Force -ErrorAction SilentlyContinue
 }

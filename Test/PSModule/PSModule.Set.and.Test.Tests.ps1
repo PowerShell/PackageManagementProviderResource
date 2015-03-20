@@ -59,6 +59,27 @@ Describe -Name "PSModule Set, Test-TargetResource Basic Test" -Tags "BVT"{
             $result| should be $true
         }
 
+        It "Set, Test-TargetResource with Trusted Source, No respository Specified: Check Installed" {
+           
+            #Register a local module repository to make the test run faster
+            RegisterRepository -Name "LocalRepository" -InstallationPolicy Trusted -Ensure Present
+
+            # 'BeforeEach' removes all specific modules under the $module path, so it is expected Set-Target* should success in the installation
+            MSFT_PSModule\Set-TargetResource -name "MyTestModule" -Ensure Present -Verbose
+
+            # Validate the module is installed
+            $result = MSFT_PSModule\Test-TargetResource -name "MyTestModule" -Ensure Present
+
+            $result| should be $true
+
+            # Uninstalling the module
+            MSFT_PSModule\Set-TargetResource -name "MyTestModule" -Ensure Absent -Verbose
+
+            # Validate the module is uninstalled
+            $result = MSFT_PSModule\Test-TargetResource -name "MyTestModule" -Ensure Absent
+
+            $result| should be $true
+        }
 
         It "Set, Test-TargetResource with untrusted source and trusted user policy: Check Warning" {
            
@@ -115,7 +136,7 @@ Describe -Name "PSModule Set, Test-TargetResource Basic Test" -Tags "BVT"{
             }
             finally
             {
-                $returnVal = RestoreRepository -RepositoryInfo $returnVal
+                RestoreRepository -RepositoryInfo $returnVal
                 # Unregistering the repository sources
             
                 RegisterRepository -Name "LocalRepository1" -Ensure Absent -SourceLocation $LocalRepositoryPath1 -PublishLocation $LocalRepositoryPath1

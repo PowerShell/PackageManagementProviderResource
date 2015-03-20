@@ -19,9 +19,33 @@ Import-Module -Name "$PSScriptRoot\..\OneGetHelper.psm1"
 #DSC Resource for the $CurrentProviderName
 $CurrentProviderName="NuGet"
 
-#Return the current state of the resource
+
 function Get-TargetResource
 {
+    <#
+    .SYNOPSIS
+
+    This DSC resource provides a mechanism to download packages from the Nuget source 
+    location and install it on your computer. 
+
+    Get-TargetResource returns the current state of the resource.
+
+    .PARAMETER Name
+    Specifies the name of the package to be installed or uninstalled.
+
+    .PARAMETER DestinationPath
+    Specifies a file location where you want the package to be installed.
+
+    .PARAMETER RequiredVersion
+    Provides the version of the package you want to install or uninstall.
+
+    .PARAMETER MaximumVersion
+    Provides the maximum version of the package you want to install or uninstall.
+
+    .PARAMETER MinimumVersion
+    Provides the minimum version of the package you want to install or uninstall.
+    #>
+
 	[CmdletBinding()]
 	[OutputType([System.Collections.Hashtable])]
 	param
@@ -114,9 +138,45 @@ function Get-TargetResource
 	        }	      
 }
 
-#Validate whether the resource is currently in the desired state
 function Test-TargetResource
-{
+{    
+    <#
+    .SYNOPSIS
+
+    This DSC resource provides a mechanism to download packages from the Nuget source 
+    location and install it on your computer. 
+
+    Test-TargetResource validates whether the resource is currently in the desired state.
+
+    .PARAMETER Name
+    Specifies the name of the package to be installed or uninstalled.
+
+    .PARAMETER DestinationPath
+    Specifies a file location where you want the package to be installed.
+
+    .PARAMETER Ensure
+    Determines whether the package to be installed or uninstalled.
+
+    .PARAMETER InstallationPolicy
+    Determines whether you trust the package’s source.
+
+    .PARAMETER RequiredVersion
+    Provides the version of the package you want to install or uninstall.
+
+    .PARAMETER MaximumVersion
+    Provides the maximum version of the package you want to install or uninstall.
+
+    .PARAMETER MinimumVersion
+    Provides the minimum version of the package you want to install or uninstall.
+
+    .PARAMETER SourceCredential 
+    Provides access to the package on a remote source. This property is not used to 
+    install the package. The package is always installed under the local system account
+
+    .PARAMETER Source
+    Specifies the Uri or name of the registered package source.
+    #>
+
 	[CmdletBinding()]
 	[OutputType([System.Boolean])]
 	param
@@ -204,10 +264,46 @@ function Test-TargetResource
         return $false
     }
 }
-
-#Get the resource to the desired state. "Make it so". 
+ 
 function Set-TargetResource
 {
+ <#
+    .SYNOPSIS
+
+    This DSC resource provides a mechanism to download packages from the Nuget source 
+    location and install it on your computer. 
+
+    Set-TargetResource sets the resource to the desired state. "Make it so"..
+
+    .PARAMETER Name
+    Specifies the name of the package to be installed or uninstalled.
+
+    .PARAMETER DestinationPath
+    Specifies a file location where you want the package to be installed.
+
+    .PARAMETER Ensure
+    Determines whether the package to be installed or uninstalled.
+
+    .PARAMETER InstallationPolicy
+    Determines whether you trust the package’s source.
+
+    .PARAMETER RequiredVersion
+    Provides the version of the package you want to install or uninstall.
+
+    .PARAMETER MaximumVersion
+    Provides the maximum version of the package you want to install or uninstall.
+
+    .PARAMETER MinimumVersion
+    Provides the minimum version of the package you want to install or uninstall.
+
+    .PARAMETER SourceCredential 
+    Provides access to the package on a remote source. This property is not used to 
+    install the package. The package is always installed under the local system account.
+
+    .PARAMETER Source
+    Specifies the Uri or name of the registered package source.
+    #>
+
 	[CmdletBinding()]
 	param
 	(
