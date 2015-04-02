@@ -119,12 +119,12 @@ The OneGetProviderResource module contains the following Windows PowerShell Desi
     </tr>
 </table>
 <br/>
-**Requirements**
+###**Requirements**###
 
 Before you install OneGetProviderResource, you must be running  [Windows Management Framework 5.0 Preview February 2015](http://blogs.msdn.com/b/powershell/archive/2015/02/18/windows-management-framework-5-0-preview-february-2015-is-now-available.aspx).
 
 <br/>
-**Installation**
+###**Installation**###
 
 To use the **OneGetProviderResource** module,
 * Copy the content of the download to the $env:ProgramFiles\WindowsPowerShell\Modules folder.
@@ -133,12 +133,12 @@ To confirm installation,
 * Run **Get-DSCResource** to verify that NugetPackage, OneGetSource, PSModule are among the DSC Resources are listed in your DSC resources.
 
 <br/>
-**Building the Code**
+###**Building the Code**###
 
 The code is a Windows PowerShell script and interpreted by the Windows PowerShell engine at runtime.
 
 <br/>
-**Running Test**
+###**Running Test**###
 
 To test the modules, run the following commands. The NuGetPackage resource is used here as an example.
 * cd $env:ProgramFiles\WindowsPowerShell\Modules\OneGetProviderResource\Test
@@ -149,7 +149,7 @@ To test the modules, run the following commands. The NuGetPackage resource is us
 You can repeat these commands similarly for testing PSModule and OneGetSource DSC resources.
 
 <br/>
-**Contributing to the Code**
+###**Contributing to the Code**###
 
 You are welcome to contribute to this project. There are many ways to contribute:
 
