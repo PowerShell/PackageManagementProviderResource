@@ -16,7 +16,7 @@ $CurrentDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
 #Calling the setup function 
 SetupOneGetSourceTest
 
-Describe -Name  "OneGetSource Get.Set.Test-TargetResource Basic Test" -Tags "BVT" {
+Describe -Name  "PackageManagementSource Get.Set.Test-TargetResource Basic Test" -Tags "BVT" {
 
     BeforeEach {
 
@@ -27,20 +27,20 @@ Describe -Name  "OneGetSource Get.Set.Test-TargetResource Basic Test" -Tags "BVT
     AfterEach {
     }     
     
-    Context "OneGetSource Get.Set.Test-TargetResource Basic Test" {
+    Context "PackageManagementSource Get.Set.Test-TargetResource Basic Test" {
 
         It "Get.Set.Test-TargetResource: Check Present" {
             
             #Register the package source
-            MSFT_OneGetSource\Set-TargetResource -name "MyNuget" -providerName "Nuget" -SourceUri $LocalRepositoryPath -Ensure Present -Verbose
+            MSFT_PackageManagementSource\Set-TargetResource -name "MyNuget" -providerName "Nuget" -SourceUri $LocalRepositoryPath -Ensure Present -Verbose
 
             #Test it to make sure Set-TargetResource is successfully register the source
-            $testResult = MSFT_OneGetSource\Test-TargetResource -Name "MyNuget" -providerName "Nuget" -SourceUri $LocalRepositoryPath -Verbose
+            $testResult = MSFT_PackageManagementSource\Test-TargetResource -Name "MyNuget" -providerName "Nuget" -SourceUri $LocalRepositoryPath -Verbose
 
             $testResult | should be $true
 
             #Validate the returned Get results
-            $getResult = MSFT_OneGetSource\Get-TargetResource -Name "MyNuget" -providerName "Nuget" -SourceUri $LocalRepositoryPath -Verbose
+            $getResult = MSFT_PackageManagementSource\Get-TargetResource -Name "MyNuget" -providerName "Nuget" -SourceUri $LocalRepositoryPath -Verbose
 
             $getResult.Ensure | should be "Present"
             $getResult.Name | should be "MyNuget"
@@ -54,12 +54,12 @@ Describe -Name  "OneGetSource Get.Set.Test-TargetResource Basic Test" -Tags "BVT
             
  
             #Test it to make sure the source is unregistered
-            $testResult = MSFT_OneGetSource\Test-TargetResource -Name "MyNuget" -providerName "Nuget" -SourceUri $LocalRepositoryPath -Verbose
+            $testResult = MSFT_PackageManagementSource\Test-TargetResource -Name "MyNuget" -providerName "Nuget" -SourceUri $LocalRepositoryPath -Verbose
 
             $testResult | should be $false
 
             #Validate the returned Get results
-            $getResult = MSFT_OneGetSource\Get-TargetResource -Name "MyNuget" -providerName "Nuget" -SourceUri $LocalRepositoryPath -Verbose
+            $getResult = MSFT_PackageManagementSource\Get-TargetResource -Name "MyNuget" -providerName "Nuget" -SourceUri $LocalRepositoryPath -Verbose
 
             $getResult.Ensure | should be "Absent"
             $getResult.Name | should be "MyNuget"
@@ -78,9 +78,9 @@ Describe -Name  "OneGetSource Get.Set.Test-TargetResource Basic Test" -Tags "BVT
             Try
             {
                 #Register the package source
-                MSFT_OneGetSource\Set-TargetResource -name "MyNuget" -providerName "Nuget" -SourceUri $LocalRepositoryPath -Ensure Present -Verbose
-                MSFT_OneGetSource\Set-TargetResource -name "MyNuget1" -providerName "Nuget" -SourceUri $LocalRepositoryPath1 -Ensure Present -Verbose
-                MSFT_OneGetSource\Set-TargetResource -name "MyNuget2" `
+                MSFT_PackageManagementSource\Set-TargetResource -name "MyNuget" -providerName "Nuget" -SourceUri $LocalRepositoryPath -Ensure Present -Verbose
+                MSFT_PackageManagementSource\Set-TargetResource -name "MyNuget1" -providerName "Nuget" -SourceUri $LocalRepositoryPath1 -Ensure Present -Verbose
+                MSFT_PackageManagementSource\Set-TargetResource -name "MyNuget2" `
                                                      -providerName "Nuget" `
                                                      -SourceUri $LocalRepositoryPath2 `
                                                      -Ensure Present `
@@ -88,7 +88,7 @@ Describe -Name  "OneGetSource Get.Set.Test-TargetResource Basic Test" -Tags "BVT
                                                      -Verbose                                                 
 
             
-                $testResult = MSFT_OneGetSource\Test-TargetResource -Name "MyNuget" `
+                $testResult = MSFT_PackageManagementSource\Test-TargetResource -Name "MyNuget" `
                                                      -providerName "Nuget"`
                                                      -SourceUri $LocalRepositoryPath `
                                                      -InstallationPolicy Trusted `
@@ -97,7 +97,7 @@ Describe -Name  "OneGetSource Get.Set.Test-TargetResource Basic Test" -Tags "BVT
                 #We registered a source with untrusted installation policy but test-targetresource uses trusted, so it's a false
                 $testResult | should be $false
 
-                $testResult = MSFT_OneGetSource\Test-TargetResource -Name "MyNuget" `
+                $testResult = MSFT_PackageManagementSource\Test-TargetResource -Name "MyNuget" `
                                                      -providerName "Nuget"`
                                                      -SourceUri $LocalRepositoryPath1 `
                                                      -InstallationPolicy Untrusted `
@@ -106,7 +106,7 @@ Describe -Name  "OneGetSource Get.Set.Test-TargetResource Basic Test" -Tags "BVT
                 #We registered a source with $LocalRepositoryPath but test-targetresource uses $LocalRepositoryPath1 , so it's a false
                 $testResult | should be $false
 
-                $testResult = MSFT_OneGetSource\Test-TargetResource -Name "MyNuget2" `
+                $testResult = MSFT_PackageManagementSource\Test-TargetResource -Name "MyNuget2" `
                                                      -providerName "Nuget"`
                                                      -SourceUri $LocalRepositoryPath2 `
                                                      -InstallationPolicy Trusted `
@@ -129,7 +129,7 @@ Describe -Name  "OneGetSource Get.Set.Test-TargetResource Basic Test" -Tags "BVT
            
             $credential = (Get-Credential -user ".\Administrator" -password "MassRules!")
 
-            MSFT_OneGetSource\Set-TargetResource -name "MyNuget" `
+            MSFT_PackageManagementSource\Set-TargetResource -name "MyNuget" `
                                                      -providerName "Nuget" `
                                                      -SourceUri $LocalRepositoryPath `
                                                      -Ensure Present `
@@ -139,7 +139,7 @@ Describe -Name  "OneGetSource Get.Set.Test-TargetResource Basic Test" -Tags "BVT
 
 
             # Validate the package is installed
-            $testResult = MSFT_OneGetSource\Test-TargetResource -Name "MyNuget" `
+            $testResult = MSFT_PackageManagementSource\Test-TargetResource -Name "MyNuget" `
                                                      -providerName "Nuget" `
                                                      -SourceUri $LocalRepositoryPath `
                                                      -Ensure Present `
@@ -155,18 +155,18 @@ Describe -Name  "OneGetSource Get.Set.Test-TargetResource Basic Test" -Tags "BVT
         It "Set-TargetResource to change installationpolicy from untrusted to trusted: Check Installed" {
             
             #Register the package source
-            MSFT_OneGetSource\Set-TargetResource -name "MyNuget" -providerName "Nuget" -SourceUri $LocalRepositoryPath -Ensure Present -InstallationPolicy Untrusted -Verbose 
+            MSFT_PackageManagementSource\Set-TargetResource -name "MyNuget" -providerName "Nuget" -SourceUri $LocalRepositoryPath -Ensure Present -InstallationPolicy Untrusted -Verbose 
 
             #Test it to make sure Set-TargetResource is successfully unregister the source
-            $testResult = MSFT_OneGetSource\Test-TargetResource -Name "MyNuget" -providerName "Nuget" -SourceUri $LocalRepositoryPath
+            $testResult = MSFT_PackageManagementSource\Test-TargetResource -Name "MyNuget" -providerName "Nuget" -SourceUri $LocalRepositoryPath
 
             $testResult | should be $true
                     
             
             #register it with the same name but different source uri
-            MSFT_OneGetSource\Set-TargetResource -name "MyNuget" -providerName "Nuget" -SourceUri $LocalRepositoryPath -Ensure Present -InstallationPolicy Trusted -Verbose 
+            MSFT_PackageManagementSource\Set-TargetResource -name "MyNuget" -providerName "Nuget" -SourceUri $LocalRepositoryPath -Ensure Present -InstallationPolicy Trusted -Verbose 
             
-            $testResult = MSFT_OneGetSource\Test-TargetResource -Name "MyNuget" -providerName "Nuget" -SourceUri $LocalRepositoryPath -InstallationPolicy Trusted
+            $testResult = MSFT_PackageManagementSource\Test-TargetResource -Name "MyNuget" -providerName "Nuget" -SourceUri $LocalRepositoryPath -InstallationPolicy Trusted
 
             $testResult | should be $true
                           
@@ -174,13 +174,13 @@ Describe -Name  "OneGetSource Get.Set.Test-TargetResource Basic Test" -Tags "BVT
         
     }#context
    
-    Context "OneGetSource Get.Set.Test-TargetResource Error Case" {  
+    Context "PackageManagementSource Get.Set.Test-TargetResource Error Case" {  
 
         It "Get-TargetResource to unregistered a source that does not exist: Check Error" {
 
             try
             {
-                MSFT_OneGetSource\Set-TargetResource -name "MyNuget" -providerName "Nuget" -SourceUri $LocalRepositoryPath -Ensure Absent -Verbose 2>&1
+                MSFT_PackageManagementSource\Set-TargetResource -name "MyNuget" -providerName "Nuget" -SourceUri $LocalRepositoryPath -Ensure Absent -Verbose 2>&1
             }
             catch
             {

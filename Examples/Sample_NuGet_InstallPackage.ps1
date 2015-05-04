@@ -36,13 +36,13 @@ configuration Sample_NuGet_InstallPackage
         [string]$InstallationPolicy
     )
 
-    Import-DscResource -Module OneGetProviderResource
+    Import-DscResource -Module PackageManagementProviderResource
 
     Node $NodeName
     {
         
         #register package source       
-        OneGetSource SourceRepository
+        PackageManagementSource SourceRepository
         {
 
             Ensure      = "Present"
@@ -59,7 +59,7 @@ configuration Sample_NuGet_InstallPackage
             Name            = $Name
             DestinationPath = $DestinationPath
             RequiredVersion = "2.0.1"
-            DependsOn       = "[OneGetSource]SourceRepository"
+            DependsOn       = "[PackageManagementSource]SourceRepository"
         }                               
     } 
 }

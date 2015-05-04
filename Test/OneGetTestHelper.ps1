@@ -13,12 +13,12 @@
 <# Run Test cases Pre-Requisite: 
   1. After download the OngetGet DSC resources modules, it is expected the following are available under your current directory. For example,
 
-    C:\Program Files\WindowsPowerShell\Modules\OneGetProviderResource\
+    C:\Program Files\WindowsPowerShell\Modules\PackageManagementProviderResource\
         
         DSCResources
         Examples
         Test
-        OneGetProviderResource.psd1
+        PackageManagementProviderResource.psd1
 #>
 
 #Define the variables
@@ -56,13 +56,13 @@ configuration Sample_InstallPester
         [string]$DestinationPath       
     )
 
-    Import-DscResource -Module OneGetProviderResource
+    Import-DscResource -Module PackageManagementProviderResource
 
     Node "localhost"
     {
         
         #register package source       
-        OneGetSource SourceRepository
+        PackageManagementSource SourceRepository
         {
 
             Ensure      = "Present"
@@ -78,7 +78,7 @@ configuration Sample_InstallPester
             Ensure          = "Present"
             Name            = "Pester"
             DestinationPath = $DestinationPath
-            DependsOn       = "[OneGetSource]SourceRepository"
+            DependsOn       = "[PackageManagementSource]SourceRepository"
             InstallationPolicy="Trusted"
         }                              
     } 
@@ -107,7 +107,7 @@ Function InstallPester
     else
     {
         # Get the module path where to be installed
-        $module = Get-Module -Name "OneGetProviderResource" -ListAvailable
+        $module = Get-Module -Name "PackageManagementProviderResource" -ListAvailable
 
         # Compile it
         Sample_InstallPester -DestinationPath "$($module.ModuleBase)\test"
@@ -222,12 +222,12 @@ Function SetupOneGetSourceTest
     <#
     .SYNOPSIS
 
-    This is a helper function for a OnegetSource test
+    This is a helper function for a PackageManagementSource test
 
     #>
     Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
 
-    Import-ModulesToSetupTest -ModuleChildPath  "MSFT_OneGetSource\MSFT_OneGetSource.psm1"
+    Import-ModulesToSetupTest -ModuleChildPath  "MSFT_PackageManagementSource\MSFT_PackageManagementSource.psm1"
 
     SetupLocalRepository
 
@@ -258,13 +258,13 @@ Function Import-ModulesToSetupTest
 
     $moduleChildPath="DSCResources\$($ModuleChildPath)"
 
-    $script:Module = Get-Module -Name "OneGetProviderResource" -ListAvailable
+    $script:Module = Get-Module -Name "PackageManagementProviderResource" -ListAvailable
 
     $modulePath = Microsoft.PowerShell.Management\Join-Path -Path $script:Module.ModuleBase -ChildPath $moduleChildPath
 
     Import-Module -Name "$($modulePath)"  
     
-    #The modules in the below tests will be installed at the same location as OneGetProviderResource. e.g., c:\Program Files\WindowsPowerShell\Modules
+    #The modules in the below tests will be installed at the same location as PackageManagementProviderResource. e.g., c:\Program Files\WindowsPowerShell\Modules
     $script:InstallationFolder = Split-Path -Path $script:Module.ModuleBase -Parent   
  }
 
@@ -314,7 +314,7 @@ function RegisterRepository
 
     Write-Verbose -Message "RegisterRepository called" 
 
-    # Calling the following to trigger Bootstrap provider for the first time use OneGet
+    # Calling the following to trigger Bootstrap provider for the first time use PackageManagement
     Get-PackageSource -ProviderName Nuget -ForceBootstrap -WarningAction Ignore 
 
     $psrepositories = PowerShellGet\get-PSRepository
@@ -495,14 +495,14 @@ function RegisterPackageSource
     Write-Verbose -Message "Calling RegisterPackageSource"
 
     #import the OngetSource module
-    Import-ModulesToSetupTest -ModuleChildPath  "MSFT_OneGetSource\MSFT_OneGetSource.psm1"
+    Import-ModulesToSetupTest -ModuleChildPath  "MSFT_PackageManagementSource\MSFT_PackageManagementSource.psm1"
     
     if($Ensure -ieq "Present")
     {       
         # If the repository has already been registered, unregister it.
         UnRegisterSource -Name $Name -ProviderName $ProviderName -SourceUri $SourceUri       
 
-        MSFT_OneGetSource\Set-TargetResource -Name $name `
+        MSFT_PackageManagementSource\Set-TargetResource -Name $name `
                                              -providerName $ProviderName `
                                              -SourceUri $SourceUri `
                                              -SourceCredential $Credential `
@@ -517,7 +517,7 @@ function RegisterPackageSource
     } 
     
     # remove the OngetSource module, after we complete the register/unregister task
-    Remove-Module -Name  "MSFT_OneGetSource"  -Force -ErrorAction SilentlyContinue         
+    Remove-Module -Name  "MSFT_PackageManagementSource"  -Force -ErrorAction SilentlyContinue         
 }
 
 Function UnRegisterSource
@@ -552,12 +552,12 @@ Function UnRegisterSource
 
     Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
 
-    $getResult = MSFT_OneGetSource\Get-TargetResource -Name $name -providerName $ProviderName -SourceUri $SourceUri -Verbose
+    $getResult = MSFT_PackageManagementSource\Get-TargetResource -Name $name -providerName $ProviderName -SourceUri $SourceUri -Verbose
 
     if ($getResult.Ensure -ieq "Present")
     {
         #Unregister it
-        MSFT_OneGetSource\Set-TargetResource -Name $name -providerName $ProviderName -SourceUri $SourceUri -Verbose -Ensure Absent               
+        MSFT_PackageManagementSource\Set-TargetResource -Name $name -providerName $ProviderName -SourceUri $SourceUri -Verbose -Ensure Absent               
     }
 }
 
@@ -572,14 +572,14 @@ Function UnRegisterAllSource
 
     Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
 
-    $sources = OneGet\Get-PackageSource
+    $sources = PackageManagement\Get-PackageSource
 
     foreach ($source in $sources)
     {
         try
         {
             #Unregister whatever can be unregistered
-            OneGet\Unregister-PackageSource -Name $source.Name -providerName $source.ProviderName -ErrorAction SilentlyContinue  2>&1   
+            PackageManagement\Unregister-PackageSource -Name $source.Name -providerName $source.ProviderName -ErrorAction SilentlyContinue  2>&1   
         }
         catch
         {
@@ -652,7 +652,7 @@ function CreateTestModuleInLocalRepository
         return
     }
 
-    # Get the parent 'OneGetProviderResource' module path
+    # Get the parent 'PackageManagementProviderResource' module path
     $parentModulePath = Microsoft.PowerShell.Management\Split-Path -Path $script:Module.ModuleBase -Parent
 
     $modulePath = Microsoft.PowerShell.Management\Join-Path -Path $parentModulePath -ChildPath "$ModuleName"

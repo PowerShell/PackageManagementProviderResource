@@ -9,9 +9,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 #
-#Helper functions for OneGet DSC Resouces
+#Helper functions for PackageManagement DSC Resouces
+
 
 Import-LocalizedData -BindingVariable LocalizedData -filename OneGetHelper.strings.psd1
+
 
  Function ExtractArguments
 {
@@ -38,7 +40,7 @@ Import-LocalizedData -BindingVariable LocalizedData -filename OneGetHelper.strin
         [System.String[]]$ArgumentNames
     )
 
-    Write-Verbose -Message ("$LocalizedData.CallingFunction -f $($MyInvocation.mycommand)")
+    Write-Verbose -Message ($LocalizedData.CallingFunction -f $($MyInvocation.mycommand))
 
     $returnValue=@{}
 
@@ -98,7 +100,7 @@ function ThrowError
         $ErrorCategory
     )
     
-    Write-Verbose -Message ("$LocalizedData.CallingFunction -f $($MyInvocation.mycommand)")
+    Write-Verbose -Message ($LocalizedData.CallingFunction -f $($MyInvocation.mycommand))
         
     $exception   = New-Object -TypeName $ExceptionName -ArgumentList $ExceptionMessage;
     $errorRecord = New-Object -TypeName System.Management.Automation.ErrorRecord -ArgumentList ($exception, $ErrorId, $ErrorCategory, $null)    
@@ -131,7 +133,7 @@ Function ValidateArgument
         [String]$Type
     )
 
-    Write-Verbose -Message ("$LocalizedData.CallingFunction -f $($MyInvocation.mycommand)")
+    Write-Verbose -Message ($LocalizedData.CallingFunction -f $($MyInvocation.mycommand))
 
     switch ($Type)
     {
@@ -154,7 +156,7 @@ Function ValidateArgument
             }
             
             #Check whether it's a valid uri. Wait for the response within 2mins.
-            $result = Invoke-WebRequest $newUri -TimeoutSec 120 -UseBasicParsing -ErrorAction SilentlyContinue
+            <#$result = Invoke-WebRequest $newUri -TimeoutSec 120 -UseBasicParsing -ErrorAction SilentlyContinue
 
             if ($null -eq (([xml]$result.Content).service ))
             {
@@ -162,7 +164,7 @@ Function ValidateArgument
                             -ExceptionMessage ($LocalizedData.InValidUri -f $Argument)`
                             -ErrorId "InValidUri" `
                             -ErrorCategory InvalidArgument
-            }
+            }#>
                                          
         }
         "DestinationPath"
@@ -180,7 +182,7 @@ Function ValidateArgument
         {
             #Argument can be either the package source Name or source Uri. 
             #Check if it's a registered package source name
-            $source = OneGet\Get-PackageSource -Name $Argument -ErrorVariable ev
+            $source = PackageManagement\Get-PackageSource -Name $Argument -ErrorVariable ev
 
             if ((-not $source) -or $ev) 
             {
@@ -227,7 +229,7 @@ Function ValidateVersionArgument
 
     )
          
-    Write-Verbose -Message ("$LocalizedData.CallingFunction -f $($MyInvocation.mycommand)")
+    Write-Verbose -Message ($LocalizedData.CallingFunction -f $($MyInvocation.mycommand))
 
     $isValid = $false
          
@@ -276,13 +278,12 @@ Function Get-InstallationPolicy
         [System.String]$RepositoryName
     )
 
-    Write-Verbose -Message ("$LocalizedData.CallingFunction -f $($MyInvocation.mycommand)")
+    Write-Verbose -Message ($LocalizedData.CallingFunction -f $($MyInvocation.mycommand))
 
-    $repositoryobj = OneGet\Get-PackageSource -Name $RepositoryName -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
+    $repositoryobj = PackageManagement\Get-PackageSource -Name $RepositoryName -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
 
     if ($repositoryobj)
     {      
         return $repositoryobj.IsTrusted
     }                  
 }
-

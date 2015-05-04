@@ -285,18 +285,12 @@ function Set-TargetResource
                                                -ArgumentNames ("Name","Repository", "MaximumVersion","MinimumVersion", "RequiredVersion") 
         
         Write-Verbose -Message ($localizedData.StartFindmodule -f $($Name))
-           
-        try
-        {
-            $modules = PowerShellGet\Find-Module @extractedArguments -ErrorVariable ev                 
-        }
-        Catch
-        {
-            # Sometimes find-module throws but not returning $ev. Add the following to ensure users can see the error
-            $ev = $_
-        }
+      
+     
+        $modules = PowerShellGet\Find-Module @extractedArguments -ErrorVariable ev                 
 
-        if ((-not $modules) -or $ev) 
+
+        if (-not $modules) 
         {              
 
              ThrowError -ExceptionName "System.InvalidOperationException" `

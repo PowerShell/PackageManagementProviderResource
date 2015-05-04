@@ -31,7 +31,7 @@ configuration Sample_PSModule
     )
 
 
-    Import-DscResource -Module OneGetProviderResource
+    Import-DscResource -Module PackageManagementProviderResource
 
     Node $NodeName
     {               

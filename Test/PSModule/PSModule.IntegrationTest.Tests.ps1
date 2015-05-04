@@ -28,7 +28,7 @@ Describe -Name "PSModule Integration Test" -Tags "RI" {
     It "Start-DSC & Get-DSCconfiguration:Check Present" {
         
        # Compile the sample configuration to MOF and run Start-DscConfiguration
-       $module=Get-Module -Name "OneGetProviderResource" -ListAvailable
+       $module=Get-Module -Name "PackageManagementProviderResource" -ListAvailable
        & "$($module.ModuleBase)\Examples\Sample_PSModule.ps1"
 
         $getResult = Get-DscConfiguration 

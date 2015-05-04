@@ -83,7 +83,7 @@ function Get-TargetResource
 
     Write-Verbose -Message ($localizedData.StartGetPackage -f $($Name))
  
-    $packages =  OneGet\Get-Package @PSBoundParameters -ForceBootstrap -ErrorAction SilentlyContinue -WarningAction SilentlyContinue                                    
+    $packages =  PackageManagement\Get-Package @PSBoundParameters -ForceBootstrap -ErrorAction SilentlyContinue -WarningAction SilentlyContinue                                    
 
     #If the package is found, the count > 0. 
      
@@ -225,7 +225,8 @@ function Test-TargetResource
     {    
 
         #
-        #There is a bug in the Oneget get-package: If a Version '2.0.1' is installed but a user is asking the RequiredVersion="2.0.1.1". Get-pacakage returns 2.0.1.  
+        #There is a bug in the PackageManagementSourceget-package: If a Version '2.0.1' is installed but a user is 
+        #asking the RequiredVersion="2.0.1.1". Get-pacakage returns 2.0.1.  
         #This means if we have 2.0.1 installed, we won't be able to install 2.0.1.1. 
         #The following is just workaround. Once the bug got fixed, replace the below code with return $true
 
@@ -353,7 +354,7 @@ function Set-TargetResource
     $PSBoundParameters.Add("ProviderName", $CurrentProviderName)
     $PSBoundParameters.Add("Destination", $DestinationPath)
     
-    #Pick the set of params used by the OneGet Cmdlet 
+    #Pick the set of params used by the PackageManagement Cmdlet 
     $extractedArguments = ExtractArguments -FunctionBoundParameters $PSBoundParameters `
                                            -ArgumentNames ("Name","Source", "MaximumVersion","MinimumVersion", "RequiredVersion", "Credential", "ProviderName")   
 
@@ -362,7 +363,7 @@ function Set-TargetResource
         Write-Verbose -Message ($localizedData.StartFindPackage -f $($Name))
 
         #Check if the package exists in the repository
-        $packages = OneGet\Find-Package @extractedArguments -Force -ErrorVariable ev      
+        $packages = PackageManagement\Find-Package @extractedArguments -Force -ErrorVariable ev      
                   
         if($ev -or (-not $packages))
         {             
@@ -393,7 +394,7 @@ function Set-TargetResource
         if ($trusted)
         {                     
             Write-Verbose -Message ($localizedData.StartInstallPackage -f $Name, $packageFound.Version.toString(), $packageFound.Source) 
-            $returnVal = $packageFound |  OneGet\Install-Package -destination $DestinationPath -ErrorVariable ev
+            $returnVal = $packageFound |  PackageManagement\Install-Package -destination $DestinationPath -ErrorVariable ev
         }
         #The repository is untrusted but user's installation policy is trusted, so we install it with a warning
         elseif ($InstallationPolicy -ieq 'Trusted')
@@ -412,7 +413,7 @@ function Set-TargetResource
             # Need -force and warn the user when a user's installation policy is trusted but the repository is not
             Write-Warning -Message  ($localizedData.InstallationPolicyWarning -f $Name, $InstallationPolicy, $packageFound.Source)
 
-            $returnVal = $packageFound |  OneGet\Install-Package -destination $DestinationPath -Force -ErrorVariable ev            
+            $returnVal = $packageFound |  PackageManagement\Install-Package -destination $DestinationPath -Force -ErrorVariable ev            
         }
         #Both user and repository is untrusted
         else
@@ -446,7 +447,7 @@ function Set-TargetResource
 
         Write-Verbose -Message ($localizedData.StartGetPackage -f $($Name))
 
-        $packages = OneGet\Get-Package @extractedArguments -Force -ErrorVariable ev
+        $packages = PackageManagement\Get-Package @extractedArguments -Force -ErrorVariable ev
 
         if ((-not $packages) -or $ev) 
         {  
@@ -458,7 +459,7 @@ function Set-TargetResource
                   
         Write-Verbose -Message ($localizedData.StartUnInstallPackage -f $($Name))
       
-        $returnVal = $packages |  OneGet\UnInstall-Package -Force -ErrorVariable ev
+        $returnVal = $packages |  PackageManagement\UnInstall-Package -Force -ErrorVariable ev
 
         if($returnVal -and $returnVal.Status -eq 'Uninstalled')
         {
