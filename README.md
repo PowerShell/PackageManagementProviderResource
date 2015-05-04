@@ -1,13 +1,13 @@
 
 ###**Introduction**###
 
-The PackageManagementProviderResource (used to call OneGetProviderResource) module contains the following Windows PowerShell Desired State Configuration (DSC) resources to allow you to manage packages and Windows PowerShell modules.
+The PackageManagementProviderResource (used to be called OneGetProviderResource) module contains the following Windows PowerShell Desired State Configuration (DSC) resources to allow you to manage packages and Windows PowerShell modules.
 
 * **NugetPackage** – lets you download packages from the NuGet source location (e.g., http://nuget.org/api/v2/), and install or uninstall the package.
 
 * **PSModule** – lets you download Windows PowerShell modules from the PowerShell Gallery, "PSGallery" (e.g., https://www.powershellgallery.com/api/v2/ ), and install them on your computer.
 
-* **PackageManageSource** – lets you register or unregister a package source on your computer
+* **PackageManagementSource** – lets you register or unregister a package source on your computer
 
 **NugetPackage** DSC resource has the following properties:
 <table>
@@ -86,7 +86,7 @@ The PackageManagementProviderResource (used to call OneGetProviderResource) modu
     </tr>
 </table>
 
-**PackageManageSource** has the following properties:
+**PackageManagementSource** has the following properties:
 
 <table>
     <tr>
