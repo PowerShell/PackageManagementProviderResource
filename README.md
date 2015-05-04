@@ -1,13 +1,13 @@
 
 ###**Introduction**###
 
-The OneGetProviderResource module contains the following Windows PowerShell Desired State Configuration (DSC) resources to allow you to manage packages and Windows PowerShell modules.
+The PackageManagementProviderResource (used to call OneGetProviderResource) module contains the following Windows PowerShell Desired State Configuration (DSC) resources to allow you to manage packages and Windows PowerShell modules.
 
 * **NugetPackage** – lets you download packages from the NuGet source location (e.g., http://nuget.org/api/v2/), and install or uninstall the package.
 
 * **PSModule** – lets you download Windows PowerShell modules from the PowerShell Gallery, "PSGallery" (e.g., https://www.powershellgallery.com/api/v2/ ), and install them on your computer.
 
-* **OneGetSource** – lets you register or unregister a package source on your computer
+* **PackageManageSource** – lets you register or unregister a package source on your computer
 
 **NugetPackage** DSC resource has the following properties:
 <table>
@@ -86,7 +86,7 @@ The OneGetProviderResource module contains the following Windows PowerShell Desi
     </tr>
 </table>
 
-**OneGetSource** has the following properties:
+**PackageManageSource** has the following properties:
 
 <table>
     <tr>
@@ -126,7 +126,7 @@ Before you install OneGetProviderResource, you must be running  [Windows Managem
 <br/>
 ###**Installation**###
 
-To use the **OneGetProviderResource** module,
+To use the **PackageManagementProviderResource** module,
 * Copy the content of the download to the $env:ProgramFiles\WindowsPowerShell\Modules folder.
 
 To confirm installation,
@@ -141,7 +141,7 @@ The code is a Windows PowerShell script and interpreted by the Windows PowerShel
 ###**Running Test**###
 
 To test the modules, run the following commands. The NuGetPackage resource is used here as an example.
-* cd $env:ProgramFiles\WindowsPowerShell\Modules\OneGetProviderResource\Test
+* cd $env:ProgramFiles\WindowsPowerShell\Modules\PackageManagementProviderResource\Test
 * .\NugetPackage\NugetPackage.Get.Tests.ps1
 * .\NugetPackage\NugetPackage.Set.Tests.ps1
 * .\NugetPackage\NugetPackage.Test.Tests.ps1
@@ -153,7 +153,7 @@ You can repeat these commands similarly for testing PSModule and OneGetSource DS
 
 You are welcome to contribute to this project. There are many ways to contribute:
 
-1.	Submit a bug report via [Issues]( https://github.com/WindowsPowerShell/OneGetResource/issues). For a guide to submitting good bug reports, please read [Painless Bug Tracking](http://www.joelonsoftware.com/articles/fog0000000029.html).
+1.	Submit a bug report via [Issues]( https://github.com/PowerShell/PackageManagementProviderResource/issues). For a guide to submitting good bug reports, please read [Painless Bug Tracking](http://www.joelonsoftware.com/articles/fog0000000029.html).
 
 2.	Verify fixes for bugs.
 
