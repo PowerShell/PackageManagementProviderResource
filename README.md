@@ -121,7 +121,7 @@ The PackageManagementProviderResource (used to be called OneGetProviderResource)
 <br/>
 ###**Requirements**###
 
-Before you install OneGetProviderResource, you must be running  [Windows Management Framework 5.0 Preview February 2015](http://blogs.msdn.com/b/powershell/archive/2015/02/18/windows-management-framework-5-0-preview-february-2015-is-now-available.aspx).
+Before you install OneGetProviderResource, you must be running  [Windows Management Framework 5.0 Preview April 2015](http://blogs.msdn.com/b/powershell/archive/2015/04/29/windows-management-framework-5-0-preview-april-2015-is-now-available.aspx).
 
 <br/>
 ###**Installation**###
