@@ -19,6 +19,8 @@ Author = 'Microsoft Corporation'
 
 CompanyName = 'Microsoft Corporation'
 
+Description = 'Modules with DSC resources for the package management.'
+
 Copyright="© Microsoft Corporation. All rights reserved."
 
 FunctionsToExport = '*'
