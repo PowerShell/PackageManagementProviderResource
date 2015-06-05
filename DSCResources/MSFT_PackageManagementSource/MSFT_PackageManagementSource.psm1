@@ -56,11 +56,12 @@ function Get-TargetResource
 
     #Set the installation policy by default, untrusted. 
     $installationPolicy ="Untrusted"
-  
-    #Validate Uri and add Location because PackageManagement uses Location not SourceUri. 
-    ValidateArgument  -Argument $PSBoundParameters['SourceUri'] -Type 'PackageSource'
+
     $PSBoundParameters.Add("Location", $SourceUri)
     $PSBoundParameters.Remove("SourceUri")
+
+    #Validate Uri and add Location because PackageManagement uses Location not SourceUri. 
+    #ValidateArgument  -Argument $PSBoundParameters['Location'] -Type 'PackageSource' -ProviderName $ProviderName
 
     Write-Verbose -Message ($localizedData.StartGetPackageSource -f $($Name))
 
@@ -280,13 +281,14 @@ function Set-TargetResource
         $PSBoundParameters.Add("Trusted", $False)
     }
     
-    #
-    #Warn a user about the installation policy
-    #
-    Write-Warning -Message ($localizedData.InstallationPolicyWarning -f $($Name), $($SourceUri), $($InstallationPolicy))
 
     if($Ensure -ieq "Present")
     {   
+        #
+        #Warn a user about the installation policy
+        #
+        Write-Warning -Message ($localizedData.InstallationPolicyWarning -f $($Name), $($SourceUri), $($InstallationPolicy))
+
         $extractedArguments = ExtractArguments -FunctionBoundParameters $PSBoundParameters `
                                                -ArgumentNames ("Name","ProviderName", "Location", "Credential", "Trusted")   
         

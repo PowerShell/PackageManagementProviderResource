@@ -130,7 +130,11 @@ Function ValidateArgument
 
         [parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [String]$Type
+        [String]$Type,
+
+        [parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [String]$ProviderName
     )
 
     Write-Verbose -Message ($LocalizedData.CallingFunction -f $($MyInvocation.mycommand))
@@ -179,20 +183,28 @@ Function ValidateArgument
             }
         }
         "PackageSource"
-        {
-            #Argument can be either the package source Name or source Uri. 
-            #Check if it's a registered package source name
-            $source = PackageManagement\Get-PackageSource -Name $Argument -ErrorVariable ev
+        {      
+            #Argument can be either the package source Name or source Uri.  
+            
+            #Check if the source is a uri 
+            $uri = $Argument -as [System.URI]  
 
-            if ((-not $source) -or $ev) 
+            if($uri -and $uri.AbsoluteURI) 
             {
-                Write-Verbose -Message ($LocalizedData.SourceNotFound -f $source)
-
-                #If not a source Name, check if it's a valid Uri
-                ValidateArgument -Argument $Argument -Type "SourceUri"  
+                # Check if it's a valid Uri
+                ValidateArgument -Argument $Argument -Type "SourceUri" -ProviderName $ProviderName
+            }
+            else
+            {
+                #Check if it's a registered package source name                                                             
+                $source = PackageManagement\Get-PackageSource -Name $Argument -ProviderName $ProviderName -verbose -ErrorVariable ev
+                if ((-not $source) -or $ev) 
+                {
+                    #We do not need to throw error here as Get-PackageSource does already
+                    Write-Verbose -Message ($LocalizedData.SourceNotFound -f $source)                
+                }
             }
         }
-
         default
         {
             ThrowError  -ExceptionName "System.ArgumentException" `

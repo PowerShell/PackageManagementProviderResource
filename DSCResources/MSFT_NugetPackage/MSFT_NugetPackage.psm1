@@ -343,7 +343,7 @@ function Set-TargetResource
     #Validate the source argument
     if ($PSBoundParameters.ContainsKey("Source"))
     {
-        ValidateArgument -Argument $Source -Type "PackageSource"
+        ValidateArgument -Argument $Source -Type "PackageSource" -ProviderName $CurrentProviderName
     }
 
     if ($PSBoundParameters.ContainsKey("SourceCredential"))
@@ -440,7 +440,7 @@ function Set-TargetResource
     else 
     {                
         #Validate if the path exists for uninstalling
-        ValidateArgument   -Argument $PSBoundParameters['DestinationPath'] -Type 'DestinationPath' 
+        ValidateArgument   -Argument $PSBoundParameters['DestinationPath'] -Type 'DestinationPath'  -ProviderName $CurrentProviderName
 
         $extractedArguments = ExtractArguments -FunctionBoundParameters $PSBoundParameters `
                                                -ArgumentNames ("Name", "Destination", "MaximumVersion","MinimumVersion", "RequiredVersion",  "ProviderName") 

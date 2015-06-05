@@ -146,6 +146,9 @@ Function SetupLocalRepository
     if (-not ( Test-Path -Path $script:LocalRepositoryPath))
     {
         New-Item -Path $script:LocalRepositoryPath -ItemType Directory -Force  
+        New-Item -Path $script:LocalRepositoryPath1 -ItemType Directory -Force  
+        New-Item -Path $script:LocalRepositoryPath2 -ItemType Directory -Force  
+        New-Item -Path $script:LocalRepositoryPath3 -ItemType Directory -Force  
     }
 
     # UnRegister repository/sources
@@ -171,9 +174,9 @@ Function SetupLocalRepository
     }
 
     # Replica the repository    
-    Copy-Item -Path $script:LocalRepositoryPath -Destination $script:LocalRepositoryPath1 -Recurse -force   
-    Copy-Item -Path $script:LocalRepositoryPath -Destination $script:LocalRepositoryPath2 -Recurse -force     
-    Copy-Item -Path $script:LocalRepositoryPath -Destination $script:LocalRepositoryPath3 -Recurse -force
+    Copy-Item -Path "$script:LocalRepositoryPath\*" -Destination $script:LocalRepositoryPath1 -Recurse -force 
+    Copy-Item -Path "$script:LocalRepositoryPath\*" -Destination $script:LocalRepositoryPath2 -Recurse -force     
+    Copy-Item -Path "$script:LocalRepositoryPath\*" -Destination $script:LocalRepositoryPath3 -Recurse -force
 }
 
 Function SetupPSModuleTest
@@ -264,8 +267,8 @@ Function Import-ModulesToSetupTest
 
     Import-Module -Name "$($modulePath)"  
     
-    #The modules in the below tests will be installed at the same location as PackageManagementProviderResource. e.g., c:\Program Files\WindowsPowerShell\Modules
-    $script:InstallationFolder = Split-Path -Path $script:Module.ModuleBase -Parent   
+    #c:\Program Files\WindowsPowerShell\Modules
+    $script:InstallationFolder = "$($script:Module.ModuleBase)\..\.." 
  }
 
 function RegisterRepository

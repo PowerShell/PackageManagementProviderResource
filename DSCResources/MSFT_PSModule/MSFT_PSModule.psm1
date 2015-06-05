@@ -13,6 +13,10 @@
 Import-LocalizedData -BindingVariable LocalizedData -filename MSFT_PSModule.strings.psd1 
 Import-Module -Name "$PSScriptRoot\..\OneGetHelper.psm1"
 
+#DSC Resource for the $CurrentProviderName
+$CurrentProviderName="PSModule"
+
+
 #Return the current state of the resource
 function Get-TargetResource
 {
@@ -269,7 +273,7 @@ function Set-TargetResource
     #Validate the repository argument
     if ($PSBoundParameters.ContainsKey("Repository"))
     {
-        ValidateArgument -Argument $Repository -Type "PackageSource" -Verbose        
+        ValidateArgument -Argument $Repository -Type "PackageSource" -ProviderName $CurrentProviderName -Verbose        
     }
 
     if($Ensure -ieq "Present")  

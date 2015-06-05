@@ -127,7 +127,7 @@ Describe -Name "PSModule Set, Test-TargetResource Basic Test" -Tags "BVT"{
                 RegisterRepository -Name "LocalRepository3" -InstallationPolicy Untrusted -Ensure Present -SourceLocation $LocalRepositoryPath3 -PublishLocation $LocalRepositoryPath3
                 
                 # User's installation policy is untrusted
-                MSFT_PSModule\Set-TargetResource -name "MyTestModule" -Ensure "Present" -Verbose
+                MSFT_PSModule\Set-TargetResource -name "MyTestModule" -Ensure "Present" -Verbose -Repository "LocalRepository2"
 
                 # The module from the trusted source should be installed
                 $result = MSFT_PSModule\Test-TargetResource -name "MyTestModule" -Repository "LocalRepository2"  -Ensure "Present"
