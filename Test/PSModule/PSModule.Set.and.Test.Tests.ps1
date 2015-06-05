@@ -28,7 +28,8 @@ Describe -Name "PSModule Set, Test-TargetResource Basic Test" -Tags "BVT"{
     BeforeEach {
 
         #Remove all left over files if exists
-        Remove-Item "$($InstallationFolder)\MyTestModule" -Recurse -Force  -ErrorAction SilentlyContinue
+        Remove-Item "$($InstallationFolder)\..\..\MyTestModule" -Recurse -Force  -ErrorAction SilentlyContinue      
+        Remove-Item "$($InstallationFolder)\..\MyTestModule" -Recurse -Force  -ErrorAction SilentlyContinue      
     }
 
     AfterEach {

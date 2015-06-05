@@ -268,7 +268,7 @@ Function Import-ModulesToSetupTest
     Import-Module -Name "$($modulePath)"  
     
     #c:\Program Files\WindowsPowerShell\Modules
-    $script:InstallationFolder = "$($script:Module.ModuleBase)\..\.." 
+    $script:InstallationFolder = "$($script:Module.ModuleBase)" 
  }
 
 function RegisterRepository

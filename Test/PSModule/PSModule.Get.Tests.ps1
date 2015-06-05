@@ -26,7 +26,8 @@ Describe -Name  "PSModule Get-TargetResource Basic Tests" -Tags "BVT" {
     BeforeEach {
 
         # Remove all left over files if exists
-        Remove-Item "$($InstallationFolder)\MyTestModule" -Recurse -Force  -ErrorAction SilentlyContinue      
+        Remove-Item "$($InstallationFolder)\..\..\MyTestModule" -Recurse -Force  -ErrorAction SilentlyContinue      
+        Remove-Item "$($InstallationFolder)\..\MyTestModule" -Recurse -Force  -ErrorAction SilentlyContinue      
     }
 
     AfterEach {
@@ -137,7 +138,8 @@ Describe -Name "PSModule Get-TargetResource Error Cases" -Tags "RI" {
     BeforeEach {
 
         #Remove all left over files if exists
-        Remove-Item "$($InstallationFolder)\MyTestModule" -Recurse -Force  -ErrorAction SilentlyContinue
+        Remove-Item "$($InstallationFolder)\..\..\MyTestModule" -Recurse -Force  -ErrorAction SilentlyContinue      
+        Remove-Item "$($InstallationFolder)\..\MyTestModule" -Recurse -Force  -ErrorAction SilentlyContinue      
     }
 
     AfterEach {
