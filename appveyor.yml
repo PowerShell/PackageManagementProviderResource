@@ -1,7 +1,7 @@
 version: 1.0.{build}
 os:
 - WMF 5
-- Windows Server 2012 R2
+
 clone_folder: c:\projects\PackageManagementProviderResource
 install:
 - ps: cinst -y pester
