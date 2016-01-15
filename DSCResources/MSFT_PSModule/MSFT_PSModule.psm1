@@ -69,7 +69,7 @@ function Get-TargetResource
     $ensure = 'Absent'
      
     $extractedArguments = ExtractArguments -FunctionBoundParameters $PSBoundParameters `
-                                           -ArgumentNames ("Name", "Repository", "MaximumVersion","MinimumVersion", "RequiredVersion")
+                                           -ArgumentNames ("Name", "Repository", "MinimumVersion", "RequiredVersion")
 
     #Get the module with the right version and repository properties
     $modules = Get-RightModule @extractedArguments -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
@@ -191,7 +191,7 @@ function Test-TargetResource
     Write-Debug -Message  "Calling Get-TargetResource"
 
     $extractedArguments = ExtractArguments -FunctionBoundParameters $PSBoundParameters `
-                                           -ArgumentNames ("Name", "Repository", "MaximumVersion","MinimumVersion", "RequiredVersion")
+                                           -ArgumentNames ("Name", "Repository", "MinimumVersion", "RequiredVersion")
 
     $status = Get-TargetResource @extractedArguments
 
@@ -281,12 +281,12 @@ function Set-TargetResource
        
         #Version check
         $extractedArguments = ExtractArguments -FunctionBoundParameters $PSBoundParameters `
-                                               -ArgumentNames ("MaximumVersion","MinimumVersion", "RequiredVersion")
+                                               -ArgumentNames ("MinimumVersion", "RequiredVersion")
 
         ValidateVersionArgument @extractedArguments 
 
         $extractedArguments = ExtractArguments -FunctionBoundParameters $PSBoundParameters `
-                                               -ArgumentNames ("Name","Repository", "MaximumVersion","MinimumVersion", "RequiredVersion") 
+                                               -ArgumentNames ("Name","Repository", "MinimumVersion", "RequiredVersion") 
         
         Write-Verbose -Message ($localizedData.StartFindmodule -f $($Name))
       
@@ -360,7 +360,7 @@ function Set-TargetResource
     {    
     
         $extractedArguments = ExtractArguments -FunctionBoundParameters $PSBoundParameters `
-                                            -ArgumentNames ("Name", "Repository", "MaximumVersion","MinimumVersion", "RequiredVersion")
+                                            -ArgumentNames ("Name", "Repository", "MinimumVersion", "RequiredVersion")
 
     
         #Get the module with the right version and repository properties
