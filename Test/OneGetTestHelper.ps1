@@ -594,7 +594,7 @@ Function UnRegisterAllSource
     }
 }
 
-function Get-Credential
+function CreateCredObject
 {
     <#
     .SYNOPSIS
@@ -604,23 +604,18 @@ function Get-Credential
     #>
 
     param(           
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=0)]
-        [System.Management.Automation.CredentialAttribute()]
-        [pscredential]
-        $UserName,
-
-        [System.Management.Automation.CredentialAttribute()]
-        [pscredential]
-        $Password
+        [System.String]
+        $Name,
+        
+        [System.String]
+        $PSCode
         )
 
 
     Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
 
-    $secPassword = ConvertTo-SecureString -String $Password -AsPlainText -Force
-    $cred = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ($UserName, $secPassword)
+    $secCode = ConvertTo-SecureString -String $PSCode -AsPlainText -Force
+    $cred = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ($Name, $secCode)
     return $cred
 }
 

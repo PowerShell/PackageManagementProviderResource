@@ -155,7 +155,7 @@ Describe -Name "PSModule Get-TargetResource Error Cases" -Tags "RI" {
         Set-TargetResource -name "MyTestModule" -Repository $LocalRepository -RequiredVersion "1.1.2" -Ensure "Present" -Verbose
 
         $result = MSFT_PSModule\Get-TargetResource -Name "MyTestModule" -Repository $LocalRepository  `
-                                        -MinimumVersion "1.0" -RequiredVersion "1.1.1" -MaximumVersion "2.3.5"                                     
+                                        -MinimumVersion "1.0" -RequiredVersion "1.1.1" #-MaximumVersion "2.3.5"                                     
        
         # Get-Target does not throw, so check 'Absent' is enough here
         $result.Ensure | should be "Absent"
@@ -168,7 +168,7 @@ Describe -Name "PSModule Get-TargetResource Error Cases" -Tags "RI" {
             Set-TargetResource -name "MyTestModule" -Repository $LocalRepository -RequiredVersion "1.1.2" -Ensure "Present" -Verbose
             
             $result = MSFT_PSModule\Get-TargetResource -Name "MyTestModule" -Repository $LocalRepository  `
-                                         -MinimumVersion "5.0" -MaximumVersion "2.5"                                    
+                                         -MinimumVersion "5.0" #-MaximumVersion "2.5"                                    
 
            $result.Ensure | should be "Absent"                
     }
@@ -178,7 +178,7 @@ Describe -Name "PSModule Get-TargetResource Error Cases" -Tags "RI" {
         Set-TargetResource -name "MyTestModule" -Repository $LocalRepository -RequiredVersion "1.1.2" -Ensure "Present" -Verbose
             
         $result = MSFT_PSModule\Get-TargetResource -Name "MyTestModule" -Repository "NoneExistRepository"  `
-                                        -MinimumVersion "1.0" -MaximumVersion "2.5"
+                                        -MinimumVersion "1.0" # -MaximumVersion "2.5"
 
         $result.Ensure | should be "Absent"
     }

@@ -135,7 +135,7 @@ Describe -Name  "NugetPackage Set-TargetResource Basic Test" -Tags "BVT" {
        
         It "Set-TargetResource with SourceCredential: Check Installed" {
            
-            $credential = (Get-Credential -user ".\Administrator" -password "MassRules!")
+            $credential = (CreateCredObject -Name ".\Administrator" -PSCode "MassRules!")
 
             # Calling Set-TargetResource in the NugetPackage resource with SourceCredential
             $result = MSFT_NugetPackage\Set-TargetResource  -Name "MyTestPackage" `

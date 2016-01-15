@@ -127,7 +127,7 @@ Describe -Name  "PackageManagementSource Get.Set.Test-TargetResource Basic Test"
                
         It "Get.Set.Test-TargetResource with SourceCredential: Check Registered" {
            
-            $credential = (Get-Credential -user ".\Administrator" -password "MassRules!")
+            $credential = (CreateCredObject -Name ".\Administrator" -PSCode "MassRules!")
 
             MSFT_PackageManagementSource\Set-TargetResource -name "MyNuget" `
                                                      -providerName "Nuget" `
