@@ -13,7 +13,7 @@ configuration Sample_PSModule
 {
     param
     (
-	#Target nodes to apply the configuration
+    #Target nodes to apply the configuration
         [string[]]$NodeName = 'localhost',
 
         #The name of the module

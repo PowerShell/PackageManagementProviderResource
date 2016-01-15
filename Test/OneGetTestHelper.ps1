@@ -136,7 +136,7 @@ Function SetupLocalRepository
     #>
 
     param
-	(
+    (
         [Switch]$PSModule
     )
 
@@ -251,9 +251,9 @@ Function Import-ModulesToSetupTest
 
     param
     (
-    	[parameter(Mandatory = $true)]
-		[System.String]
-		$ModuleChildPath
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $ModuleChildPath
 
     )
   
@@ -295,25 +295,25 @@ function RegisterRepository
     #>
 
     param
-	(
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$Name,
+    (
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $Name,
 
-		[System.String]
-		$SourceLocation=$script:LocalRepositoryPath,
+        [System.String]
+        $SourceLocation=$script:LocalRepositoryPath,
    
-   		[System.String]
-		$PublishLocation=$script:LocalRepositoryPath,
+           [System.String]
+        $PublishLocation=$script:LocalRepositoryPath,
 
         [ValidateSet("Trusted","Untrusted")]
-		[System.String]
-		$InstallationPolicy="Trusted",
+        [System.String]
+        $InstallationPolicy="Trusted",
 
-		[ValidateSet("Present","Absent")]
-		[System.String]
-		$Ensure="Present"
-	)
+        [ValidateSet("Present","Absent")]
+        [System.String]
+        $Ensure="Present"
+    )
 
     Write-Verbose -Message "RegisterRepository called" 
 
@@ -371,11 +371,11 @@ function RestoreRepository
     #>
 
     param
-	(
+    (
         [parameter(Mandatory = $true)]
-		[Hashtable]
-		$RepositoryInfo
-	)
+        [Hashtable]
+        $RepositoryInfo
+    )
 
     Write-Verbose -Message "RestoreRepository called"  
        
@@ -471,29 +471,29 @@ function RegisterPackageSource
     #>
 
     param
-	(
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$Name,
+    (
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $Name,
 
         #Source location. It can be source name or uri
-		[System.String]
-		$SourceUri,
+        [System.String]
+        $SourceUri,
 
-		[System.Management.Automation.PSCredential]
-		$Credential,
+        [System.Management.Automation.PSCredential]
+        $Credential,
     
-		[System.String]
+        [System.String]
         [ValidateSet("Trusted","Untrusted")]
-		$InstallationPolicy ="Untrusted",
+        $InstallationPolicy ="Untrusted",
 
-		[System.String]
-		$ProviderName="Nuget",
+        [System.String]
+        $ProviderName="Nuget",
 
-		[ValidateSet("Present","Absent")]
-		[System.String]
-		$Ensure="Present"
-	)
+        [ValidateSet("Present","Absent")]
+        [System.String]
+        $Ensure="Present"
+    )
 
     Write-Verbose -Message "Calling RegisterPackageSource"
 
@@ -543,14 +543,14 @@ Function UnRegisterSource
     param
     (
         [parameter(Mandatory = $true)]
-		[System.String]
-		$Name,
+        [System.String]
+        $Name,
 
         [System.String]
-		$SourceUri,
+        $SourceUri,
 
-    	[System.String]
-		$ProviderName="Nuget"
+        [System.String]
+        $ProviderName="Nuget"
     )
 
     Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
@@ -603,18 +603,24 @@ function Get-Credential
 
     #>
 
-    param(
-        [System.String]
-        $User, 
+    param(           
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=0)]
+        [System.Management.Automation.CredentialAttribute()]
+        [pscredential]
+        $UserName,
 
-        [System.String]
+        [System.Management.Automation.CredentialAttribute()]
+        [pscredential]
         $Password
-    )
+        )
+
 
     Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
 
     $secPassword = ConvertTo-SecureString -String $Password -AsPlainText -Force
-    $cred = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ($User, $secPassword)
+    $cred = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ($UserName, $secPassword)
     return $cred
 }
 

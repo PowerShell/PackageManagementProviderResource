@@ -44,26 +44,26 @@ function Get-TargetResource
     Provides the minimum version of the module you want to install or uninstall.
     #>
 
-	[CmdletBinding()]
-	[OutputType([System.Collections.Hashtable])]
-	param
-	(
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$Name,
+    [CmdletBinding()]
+    [OutputType([System.Collections.Hashtable])]
+    param
+    (
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $Name,
 
-		[System.String]
-		$Repository="PSGallery",
+        [System.String]
+        $Repository="PSGallery",
         
-		[System.String]
-		$RequiredVersion,
+        [System.String]
+        $RequiredVersion,
 
-		#[System.String]
-		#$MaximumVersion,
+        #[System.String]
+        #$MaximumVersion,
 
-		[System.String]
-		$MinimumVersion
-	)
+        [System.String]
+        $MinimumVersion
+    )
 
     #Initialize the $Ensure variable
     $ensure = 'Absent'
@@ -92,7 +92,7 @@ function Get-TargetResource
     {
         return @{
                     Ensure = $ensure
-		            Name   = $Name
+                    Name   = $Name
                 }
     }
     else
@@ -124,7 +124,7 @@ function Get-TargetResource
                 Author           = $latestModule.Author
                 InstalledVersion = $latestModule.Version 
                 InstallationPolicy=if($installationPolicy) {"Trusted"}else{"Untrusted"}                                     
-            }                	
+            }                    
     }
 }
 
@@ -159,34 +159,34 @@ function Test-TargetResource
     .PARAMETER MinimumVersion
     Provides the minimum version of the module you want to install or uninstall.
     #>
-	[CmdletBinding()]
-	[OutputType([System.Boolean])]
-	param
-	(
-		[ValidateSet("Present","Absent")]
-		[System.String]
-		$Ensure="Present",
+    [CmdletBinding()]
+    [OutputType([System.Boolean])]
+    param
+    (
+        [ValidateSet("Present","Absent")]
+        [System.String]
+        $Ensure="Present",
 
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$Name,
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $Name,
 
-		[System.String]
-		$Repository="PSGallery",
+        [System.String]
+        $Repository="PSGallery",
 
         [ValidateSet("Trusted","Untrusted")]
-		[System.String]
-		$InstallationPolicy="Untrusted",
+        [System.String]
+        $InstallationPolicy="Untrusted",
         
-		[System.String]
-		$RequiredVersion,
+        [System.String]
+        $RequiredVersion,
 
-		#[System.String]
-		#$MaximumVersion,
+        #[System.String]
+        #$MaximumVersion,
 
-		[System.String]
-		$MinimumVersion
-	)
+        [System.String]
+        $MinimumVersion
+    )
 
     Write-Debug -Message  "Calling Get-TargetResource"
 
@@ -241,33 +241,33 @@ function Set-TargetResource
     Provides the minimum version of the module you want to install or uninstall.
     #>
 
-	[CmdletBinding()]
-	param
-	(
-		[ValidateSet("Present","Absent")]
-		[System.String]
-		$Ensure="Present",
+    [CmdletBinding()]
+    param
+    (
+        [ValidateSet("Present","Absent")]
+        [System.String]
+        $Ensure="Present",
 
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$Name,
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $Name,
 
-		[System.String]
-		$Repository="PSGallery",
+        [System.String]
+        $Repository="PSGallery",
 
         [ValidateSet("Trusted","Untrusted")]
-		[System.String]
-		$InstallationPolicy="Untrusted",
+        [System.String]
+        $InstallationPolicy="Untrusted",
 
-		[System.String]
-		$RequiredVersion,
+        [System.String]
+        $RequiredVersion,
 
-		#[System.String]
-		#$MaximumVersion,
+        #[System.String]
+        #$MaximumVersion,
 
-		[System.String]
-		$MinimumVersion
-	)
+        [System.String]
+        $MinimumVersion
+    )
 
 
     #Validate the repository argument

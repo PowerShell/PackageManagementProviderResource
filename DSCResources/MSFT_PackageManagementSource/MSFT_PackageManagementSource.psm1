@@ -34,22 +34,22 @@ function Get-TargetResource
     Specifies the Uri of the package source.
     #>
 
-	[CmdletBinding()]
-	[OutputType([System.Collections.Hashtable])]
-	param
-	(
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$Name,
+    [CmdletBinding()]
+    [OutputType([System.Collections.Hashtable])]
+    param
+    (
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $Name,
 
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$ProviderName,
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $ProviderName,
 
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$SourceUri
-	)
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $SourceUri
+    )
 
     #initialize a local var
     $ensure = "Absent"
@@ -140,36 +140,36 @@ function Test-TargetResource
     Provides access to the package on a remote source. 
 
     .PARAMETER InstallationPolicy
-    Determines whether you trust the package�s source.
+    Determines whether you trust the packageâ€™s source.
     #>
 
-	[CmdletBinding()]
-	[OutputType([System.Boolean])]
-	param
-	(
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$Name,
+    [CmdletBinding()]
+    [OutputType([System.Boolean])]
+    param
+    (
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $Name,
 
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$ProviderName,
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $ProviderName,
 
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$SourceUri,
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $SourceUri,
 
-		[ValidateSet("Present","Absent")]
-		[System.String]
-		$Ensure="Present",
+        [ValidateSet("Present","Absent")]
+        [System.String]
+        $Ensure="Present",
 
-		[System.Management.Automation.PSCredential]
-		$SourceCredential,
+        [System.Management.Automation.PSCredential]
+        $SourceCredential,
 
         [ValidateSet("Trusted","Untrusted")]
-		[System.String]
-		$InstallationPolicy="Untrusted"
-	)
+        [System.String]
+        $InstallationPolicy="Untrusted"
+    )
 
     #Get the current status of the package source 
     Write-Debug -Message  "Calling Get-TargetResource"
@@ -234,35 +234,35 @@ function Set-TargetResource
     Provides access to the package on a remote source. 
 
     .PARAMETER InstallationPolicy
-    Determines whether you trust the package�s source.
+    Determines whether you trust the packageâ€™s source.
     #>
 
-	[CmdletBinding()]
-	param
-	(
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$Name,
+    [CmdletBinding()]
+    param
+    (
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $Name,
 
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$ProviderName,
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $ProviderName,
 
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$SourceUri,
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $SourceUri,
 
-		[ValidateSet("Present","Absent")]
-		[System.String]
-		$Ensure="Present",
+        [ValidateSet("Present","Absent")]
+        [System.String]
+        $Ensure="Present",
 
-		[System.Management.Automation.PSCredential]
-		$SourceCredential,
+        [System.Management.Automation.PSCredential]
+        $SourceCredential,
 
         [ValidateSet("Trusted","Untrusted")]
-		[System.String]
-		$InstallationPolicy="Untrusted"
-	)
+        [System.String]
+        $InstallationPolicy="Untrusted"
+    )
 
     #Add Location because PackageManagement uses Location not SourceUri. 
     $PSBoundParameters.Add("Location", $SourceUri)

@@ -46,27 +46,27 @@ function Get-TargetResource
     Provides the minimum version of the package you want to install or uninstall.
     #>
 
-	[CmdletBinding()]
-	[OutputType([System.Collections.Hashtable])]
-	param
-	(
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$Name,
+    [CmdletBinding()]
+    [OutputType([System.Collections.Hashtable])]
+    param
+    (
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $Name,
 
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$DestinationPath,
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $DestinationPath,
 
-		[System.String]
-		$RequiredVersion,
+        [System.String]
+        $RequiredVersion,
 
-		[System.String]
-		$MaximumVersion,
+        [System.String]
+        $MaximumVersion,
 
-		[System.String]
-		$MinimumVersion
-	)
+        [System.String]
+        $MinimumVersion
+    )
         
     #validate version info
     $version = ExtractArguments -FunctionBoundParameters $PSBoundParameters -ArgumentNames ("MinimumVersion", "MaximumVersion", "RequiredVersion")
@@ -104,8 +104,8 @@ function Get-TargetResource
     {
         return @{
             Ensure              = $ensure
-		    Name                = $Name		
-		    DestinationPath     = $DestinationPath
+            Name                = $Name        
+            DestinationPath     = $DestinationPath
         }
     }
 
@@ -127,15 +127,15 @@ function Get-TargetResource
     #Extract the SoftwareIdentity
     $softwareIdentity = $packageWithLatestVersion | select 'swid'   
                    
-	return @{
-		    Ensure              = $ensure
-		    Name                = $itemName	
-		    DestinationPath     = $DestinationPath
-		    Description         = $packageWithLatestVersion.Summary
-		    InstalledVersion    = $packageWithLatestVersion.Version
+    return @{
+            Ensure              = $ensure
+            Name                = $itemName    
+            DestinationPath     = $DestinationPath
+            Description         = $packageWithLatestVersion.Summary
+            InstalledVersion    = $packageWithLatestVersion.Version
             Source              = $packageWithLatestVersion.Source
             SoftwareIdentity    = $softwareIdentity
-	        }	      
+            }          
 }
 
 function Test-TargetResource
@@ -158,7 +158,7 @@ function Test-TargetResource
     Determines whether the package to be installed or uninstalled.
 
     .PARAMETER InstallationPolicy
-    Determines whether you trust the package�s source.
+    Determines whether you trust the packageâ€™s source.
 
     .PARAMETER RequiredVersion
     Provides the version of the package you want to install or uninstall.
@@ -177,41 +177,41 @@ function Test-TargetResource
     Specifies the Uri or name of the registered package source.
     #>
 
-	[CmdletBinding()]
-	[OutputType([System.Boolean])]
-	param
-	(
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$Name,
+    [CmdletBinding()]
+    [OutputType([System.Boolean])]
+    param
+    (
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $Name,
 
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$DestinationPath,
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $DestinationPath,
 
-		[ValidateSet("Present","Absent")]
-		[System.String]
-		$Ensure="Present",
+        [ValidateSet("Present","Absent")]
+        [System.String]
+        $Ensure="Present",
 
-		[ValidateSet("Trusted","Untrusted")]
-		[System.String]
-		$InstallationPolicy="Untrusted",
+        [ValidateSet("Trusted","Untrusted")]
+        [System.String]
+        $InstallationPolicy="Untrusted",
 
-		[System.String]
-		$RequiredVersion,
+        [System.String]
+        $RequiredVersion,
 
-		[System.String]
-		$MaximumVersion,
+        [System.String]
+        $MaximumVersion,
 
-		[System.String]
-		$MinimumVersion,
+        [System.String]
+        $MinimumVersion,
 
-		[System.Management.Automation.PSCredential]
-		$SourceCredential,
+        [System.Management.Automation.PSCredential]
+        $SourceCredential,
 
-		[System.String]
-		$Source
-	)
+        [System.String]
+        $Source
+    )
 
     #Extract arguments to be used by Get-TargetResource. Otherwise the function call will fail.  
     $extractedArguments = ExtractArguments -FunctionBoundParameters $PSBoundParameters `
@@ -286,7 +286,7 @@ function Set-TargetResource
     Determines whether the package to be installed or uninstalled.
 
     .PARAMETER InstallationPolicy
-    Determines whether you trust the package�s source.
+    Determines whether you trust the packageâ€™s source.
 
     .PARAMETER RequiredVersion
     Provides the version of the package you want to install or uninstall.
@@ -305,40 +305,40 @@ function Set-TargetResource
     Specifies the Uri or name of the registered package source.
     #>
 
-	[CmdletBinding()]
-	param
-	(
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$Name,
+    [CmdletBinding()]
+    param
+    (
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $Name,
 
-		[parameter(Mandatory = $true)]
-		[System.String]
-		$DestinationPath,
+        [parameter(Mandatory = $true)]
+        [System.String]
+        $DestinationPath,
 
-		[ValidateSet("Present","Absent")]
-		[System.String]
-		$Ensure="Present",
+        [ValidateSet("Present","Absent")]
+        [System.String]
+        $Ensure="Present",
 
-        [ValidateSet("Trusted","Untrusted")]
-		[System.String]
-		$InstallationPolicy="Untrusted",
+                [ValidateSet("Trusted","Untrusted")]
+        [System.String]
+        $InstallationPolicy="Untrusted",
 
-		[System.String]
-		$RequiredVersion,
+        [System.String]
+        $RequiredVersion,
 
-		[System.String]
-		$MaximumVersion,
+        [System.String]
+        $MaximumVersion,
 
-		[System.String]
-		$MinimumVersion,
+        [System.String]
+        $MinimumVersion,
 
-		[System.Management.Automation.PSCredential]
-		$SourceCredential,
+        [System.Management.Automation.PSCredential]
+        $SourceCredential,
 
-		[System.String]
-		$Source
-	)
+        [System.String]
+        $Source
+    )
 
     #Validate the source argument
     if ($PSBoundParameters.ContainsKey("Source"))
