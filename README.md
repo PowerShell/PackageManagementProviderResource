@@ -1,5 +1,7 @@
 
-### [PackageManagementProviderResource](https://github.com/PowerShell/PackageManagementProviderResource)
+[![Build status](https://ci.appveyor.com/api/projects/status/bx86bb6vuf6l3lwp/branch/master?svg=true)](https://ci.appveyor.com/project/PowerShell/PackageManagementProviderResource/branch/master)
+
+### PackageManagementProviderResource
 
 The PackageManagementProviderResource is the DSC resources for PackageManagement (aka OneGet) providers. Currently it contains the Nuget and PowerShellGet provider DSC resources to allow you to manage packages and Windows PowerShell modules.
 
