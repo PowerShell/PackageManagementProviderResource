@@ -1,7 +1,7 @@
 
 ### [PackageManagementProviderResource](https://github.com/PowerShell/PackageManagementProviderResource)
 
-The PackageManagementProviderResource is the DSC resources for PackageManagement (aka OneGet) providers. It contains the following Windows PowerShell Desired State Configuration (DSC) resources to allow you to manage packages and Windows PowerShell modules.
+The PackageManagementProviderResource is the DSC resources for PackageManagement (aka OneGet) providers. It contains the Nuget and PowerShellGet provider DSC resources to allow you to manage packages and Windows PowerShell modules.
 
 #### Contributing
 Please check out common DSC Resources [contributing guidelines](https://github.com/PowerShell/DscResource.Kit/blob/master/CONTRIBUTING.md).
