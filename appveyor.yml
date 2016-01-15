@@ -21,7 +21,7 @@ install:
 
 build_script:
 
-- ps: Copy-Item -Recurse "$env:APPVEYOR_BUILD_FOLDER\PackageManagementProviderResource\" "$Env:ProgramFiles\WindowsPowerShell\Modules\" -Force -Verbose
+- ps: Copy-Item -Recurse "$env:APPVEYOR_BUILD_FOLDER\" "$Env:ProgramFiles\WindowsPowerShell\Modules\" -Force -Verbose
 
 
 #---------------------------------#
