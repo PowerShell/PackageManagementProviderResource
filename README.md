@@ -1,7 +1,7 @@
 
 ### [PackageManagementProviderResource](https://github.com/PowerShell/PackageManagementProviderResource)
 
-The PackageManagementProviderResource is the DSC resources for PackageManagement (aka OneGet) providers. It contains the Nuget and PowerShellGet provider DSC resources to allow you to manage packages and Windows PowerShell modules.
+The PackageManagementProviderResource is the DSC resources for PackageManagement (aka OneGet) providers. Currently it contains the Nuget and PowerShellGet provider DSC resources to allow you to manage packages and Windows PowerShell modules.
 
 #### Contributing
 Please check out common DSC Resources [contributing guidelines](https://github.com/PowerShell/DscResource.Kit/blob/master/CONTRIBUTING.md).
@@ -126,7 +126,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 <br/>
 ####**Requirements**####
 
-Before you install OneGetProviderResource, you must be running  [Windows Management Framework 5.0 Preview April 2015](http://blogs.msdn.com/b/powershell/archive/2015/04/29/windows-management-framework-5-0-preview-april-2015-is-now-available.aspx).
+Before you install this package, you must be running  [Windows Management Framework 5.0 Product Preview](https://www.microsoft.com/en-us/download/details.aspx?id=48729).
 
 <br/>
 ####**Installation**####
