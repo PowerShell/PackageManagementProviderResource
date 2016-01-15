@@ -1,5 +1,5 @@
 
-[![Build status](https://ci.appveyor.com/api/github/webhook?id=at4imw6ds7tcppkj/branch/master?svg=true)](https://ci.appveyor.com/project/PowerShell/PackageManagementProviderResource/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/k3h1hypknt4vnyy0/branch/master?svg=true)](https://ci.appveyor.com/project/PowerShell/PackageManagementProviderResource/branch/master)
 
 ### PackageManagementProviderResource
 
