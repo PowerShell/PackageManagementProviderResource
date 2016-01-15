@@ -1,7 +1,14 @@
 
-###**Introduction**###
+### [PackageManagementProviderResource](https://github.com/PowerShell/PackageManagementProviderResource)
 
-The PackageManagementProviderResource (used to be called OneGetProviderResource) module contains the following Windows PowerShell Desired State Configuration (DSC) resources to allow you to manage packages and Windows PowerShell modules.
+DSC Resources for the PackageManagement (aka. OneGet) Providers
+
+The PackageManagementProviderResource is the DSC resources for PackageManagement (aka OneGet) providers. It contains the following Windows PowerShell Desired State Configuration (DSC) resources to allow you to manage packages and Windows PowerShell modules.
+
+#### Contributing
+Please check out common DSC Resources [contributing guidelines](https://github.com/PowerShell/DscResource.Kit/blob/master/CONTRIBUTING.md).
+
+#### Resources
 
 * **NugetPackage** – lets you download packages from the NuGet source location (e.g., http://nuget.org/api/v2/), and install or uninstall the package.
 
@@ -119,12 +126,12 @@ The PackageManagementProviderResource (used to be called OneGetProviderResource)
     </tr>
 </table>
 <br/>
-###**Requirements**###
+####**Requirements**####
 
 Before you install OneGetProviderResource, you must be running  [Windows Management Framework 5.0 Preview April 2015](http://blogs.msdn.com/b/powershell/archive/2015/04/29/windows-management-framework-5-0-preview-april-2015-is-now-available.aspx).
 
 <br/>
-###**Installation**###
+####**Installation**####
 
 To use the **PackageManagementProviderResource** module,
 * Copy the content of the download to the $env:ProgramFiles\WindowsPowerShell\Modules folder.
@@ -133,12 +140,12 @@ To confirm installation,
 * Run **Get-DSCResource** to verify that NugetPackage, OneGetSource, PSModule are among the DSC Resources are listed in your DSC resources.
 
 <br/>
-###**Building the Code**###
+####**Building the Code**####
 
 The code is a Windows PowerShell script and interpreted by the Windows PowerShell engine at runtime.
 
 <br/>
-###**Running Test**###
+####**Running Test**####
 
 To test the modules, run the following commands. The NuGetPackage resource is used here as an example.
 * cd $env:ProgramFiles\WindowsPowerShell\Modules\PackageManagementProviderResource\Test
@@ -149,7 +156,7 @@ To test the modules, run the following commands. The NuGetPackage resource is us
 You can repeat these commands similarly for testing PSModule and OneGetSource DSC resources.
 
 <br/>
-###**Contributing to the Code**###
+####**Contributing to the Code**####
 
 You are welcome to contribute to this project. There are many ways to contribute:
 
@@ -171,3 +178,7 @@ You are welcome to contribute to this project. There are many ways to contribute
 You might also read these two blog posts about contributing code: [Open Source Contribution Etiquette](http://tirania.org/blog/archive/2010/Dec-31.html) by Miguel de Icaza, and [Don’t “Push” Your Pull Requests](http://www.igvita.com/2011/12/19/dont-push-your-pull-requests/) by Ilya Grigorik.
 
 Before submitting a feature or substantial code contribution, please discuss it with the Windows PowerShell team via [Issues]( https://github.com/WindowsPowerShell/OneGetResource/issues), and ensure it follows the product roadmap. Note that all code submissions will be rigorously reviewed by the Windows PowerShell Team. Only those that meet a high bar for both quality and roadmap fit will be merged into the source.
+
+####**Examples**####
+
+Samples are included in the Examples folder.
