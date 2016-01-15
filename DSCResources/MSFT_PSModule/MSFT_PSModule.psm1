@@ -58,8 +58,8 @@ function Get-TargetResource
 		[System.String]
 		$RequiredVersion,
 
-		[System.String]
-		$MaximumVersion,
+		#[System.String]
+		#$MaximumVersion,
 
 		[System.String]
 		$MinimumVersion
@@ -181,8 +181,8 @@ function Test-TargetResource
 		[System.String]
 		$RequiredVersion,
 
-		[System.String]
-		$MaximumVersion,
+		#[System.String]
+		#$MaximumVersion,
 
 		[System.String]
 		$MinimumVersion
@@ -262,8 +262,8 @@ function Set-TargetResource
 		[System.String]
 		$RequiredVersion,
 
-		[System.String]
-		$MaximumVersion,
+		#[System.String]
+		#$MaximumVersion,
 
 		[System.String]
 		$MinimumVersion
