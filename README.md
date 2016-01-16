@@ -1,8 +1,6 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/k3h1hypknt4vnyy0/branch/master?svg=true)](https://ci.appveyor.com/project/PowerShell/PackageManagementProviderResource/branch/master)
 
-https://ci.appveyor.com/api/projects/status/k3h1hypknt4vnyy0?svg=true
-[![Build status](https://ci.appveyor.com/api/projects/status/mxn453y284eab8li/branch/master?svg=true)](https://ci.appveyor.com/project/PowerShell/xsqlserver/branch/master)
 
 ### PackageManagementProviderResource
 
