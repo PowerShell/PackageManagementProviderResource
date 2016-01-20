@@ -1,4 +1,4 @@
-﻿#
+#
 # Copyright (c) Microsoft Corporation.
 #
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
@@ -140,7 +140,7 @@ function Test-TargetResource
     Provides access to the package on a remote source. 
 
     .PARAMETER InstallationPolicy
-    Determines whether you trust the packageâ€™s source.
+    Determines whether you trust the package�s source.
     #>
 
     [CmdletBinding()]
@@ -234,7 +234,7 @@ function Set-TargetResource
     Provides access to the package on a remote source. 
 
     .PARAMETER InstallationPolicy
-    Determines whether you trust the packageâ€™s source.
+    Determines whether you trust the package�s source.
     #>
 
     [CmdletBinding()]

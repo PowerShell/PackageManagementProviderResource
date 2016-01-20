@@ -1,4 +1,4 @@
-﻿
+
 [ClassVersion("1.0.0.0"),FriendlyName("PSModule")] 
 class MSFT_PSModule : OMI_BaseResource
 {

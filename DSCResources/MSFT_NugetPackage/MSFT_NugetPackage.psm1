@@ -1,4 +1,4 @@
-﻿#
+#
 # Copyright (c) Microsoft Corporation.
 #
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
@@ -158,7 +158,7 @@ function Test-TargetResource
     Determines whether the package to be installed or uninstalled.
 
     .PARAMETER InstallationPolicy
-    Determines whether you trust the packageâ€™s source.
+    Determines whether you trust the package�s source.
 
     .PARAMETER RequiredVersion
     Provides the version of the package you want to install or uninstall.
@@ -286,7 +286,7 @@ function Set-TargetResource
     Determines whether the package to be installed or uninstalled.
 
     .PARAMETER InstallationPolicy
-    Determines whether you trust the packageâ€™s source.
+    Determines whether you trust the package�s source.
 
     .PARAMETER RequiredVersion
     Provides the version of the package you want to install or uninstall.
