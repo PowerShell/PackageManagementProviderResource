@@ -76,28 +76,34 @@ function Get-TargetResource
         $Source,
 
         [Parameter()]
+        [PSCredential] $SourceCredential,
+
+        [Parameter()]
         [System.String]
         $ProviderName        
     )
     
     $ensure = "Absent"
-
     $PSBoundParameters.Remove("Source")
-
-    Write-Verbose -Message ($localizedData.StartGetPackageSource -f $($Name))
-
-    #check if the package source already registered on the computer
-    $result = PackageManagement\Get-Package @PSBoundParameters -ForceBootstrap -ErrorAction SilentlyContinue -WarningAction SilentlyContinue  
+    $PSBoundParameters.Remove("SourceCredential")
+    
+    Write-Verbose -Message ($localizedData.StartGetPackage -f (GetMessageFromParameterDictionary $PSBoundParameters),$env:PSModulePath)
+    $result = GetPackageHelper @PSBoundParameters
         
 
-    if ($result.count -gt 0)
+    if ($result.count -eq 1)
     {
-        Write-Verbose -Message ($localizedData.PackageSourceFound -f $($Name))
+        Write-Verbose -Message ($localizedData.PackageFound -f $Name)
+        $ensure = "Present"
+    }
+    elseif ($result.count -gt 1)
+    {
+        Write-Verbose -Message ($localizedData.MultiplePackagesFound -f $Name)
         $ensure = "Present"
     }
     else
     {
-        Write-Verbose -Message ($localizedData.PackageSourceNotFound -f $($Name))
+        Write-Verbose -Message ($localizedData.PackageNotFound -f $($Name))
     }
 
     Write-Debug -Message "Source $($Name) is $($ensure)"
@@ -109,24 +115,25 @@ function Get-TargetResource
             Ensure       = $ensure
             Name         = $Name
             ProviderName = $ProviderName
+            RequiredVersion = $RequiredVersion
+            MinimumVersion = $MinimumVersion
+            MaximumVersion = $MaximumVersion
         }
     }
     else
     {
-        #Sometimes Get-PackageSource can return duplicate entries. Below is the workaround to the bug. 
-        #Once the bug gets fixed, remove the below if ($source.count -gt 1) block 
-
-        if ($result.count -gt 1)
+        if ($result.Count -gt 1)
         {
-            $result =$source[0]
+          $result = $result[0]
         }
 
-        return @{
-            Ensure             = $ensure
-            Name               = $Name
-            ProviderName       = $ProviderName
-            Source             = $result.source
-        }
+        return  @{
+                Ensure             = $ensure
+                Name               = $result.Name
+                ProviderName       = $result.ProviderName
+                Source             = $result.source
+                RequiredVersion    = $result.Version
+            } 
     } 
 }
 
@@ -170,7 +177,7 @@ function Test-TargetResource
     #>
 
     [CmdletBinding()]
-    [OutputType([System.Collections.Hashtable])]
+    [OutputType([bool])]
     param
     (
         [Parameter(Mandatory = $true)]
@@ -190,11 +197,33 @@ function Test-TargetResource
         $Source,
 
         [Parameter()]
+        [PSCredential] $SourceCredential,
+                
+        [ValidateSet("Present","Absent")]
         [System.String]
-        $ProviderName        
+        $Ensure="Present",
+
+        [Parameter()]
+        [System.String]
+        $ProviderName   
     )
 
+    
+    Write-Verbose -Message ($localizedData.StartTestPackage -f (GetMessageFromParameterDictionary $PSBoundParameters))
+    $null = $PSBoundParameters.Remove("Ensure")
 
+    $temp = Get-TargetResource @PSBoundParameters
+
+    if ($temp.Ensure -eq $ensure)
+    {
+        Write-Verbose -Message ($localizedData.InDesiredState -f $Name, $Ensure, $temp.Ensure)            
+        return $True 
+    }
+    else
+    {
+        Write-Verbose -Message ($localizedData.NotInDesiredState -f $Name,$ensure,$temp.ensure)            
+        return [bool] $False
+    }    
 }
 
 function Set-TargetResource
@@ -237,7 +266,6 @@ function Set-TargetResource
     #>
 
     [CmdletBinding()]
-    [OutputType([System.Collections.Hashtable])]
     param
     (
         [Parameter(Mandatory = $true)]
@@ -257,11 +285,49 @@ function Set-TargetResource
         $Source,
 
         [Parameter()]
+        [PSCredential] $SourceCredential,
+
+        [ValidateSet("Present","Absent")]
+        [System.String]
+        $Ensure="Present",
+
+        [Parameter()]
         [System.String]
         $ProviderName        
     )
 
-    #TOD  
+    Write-Verbose -Message ($localizedData.StartSetPackage -f (GetMessageFromParameterDictionary $PSBoundParameters))
+    
+    $null = $PSBoundParameters.Remove("Ensure")
+    Write-Verbose -Message ($localizedData.InstallPackageInSet -f (GetMessageFromParameterDictionary $PSBoundParameters))
+    Install-Package @PSBoundParameters    
+ }
+
+ function GetPackageHelper
+ {
+    param(
+        $Name,
+        $RequiredVersion,
+        $MinimumVersion,
+        $MaximumVersion,
+        $ProviderName
+    )
+
+    return PackageManagement\Get-Package @PSBoundParameters -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
+    
+ }
+
+ function GetMessageFromParameterDictionary
+ {
+    <#
+        Returns a strng of form "ParameterName:ParameterValue"
+        Used with Write-Verbose message. The input is mostly $PSBoundParameters
+    #>
+    param([System.Collections.IDictionary] $paramDictionary)
+
+    $returnValue = ""
+    $paramDictionary.Keys | % { $returnValue += "-{0} {1} " -f $_,$paramDictionary[$_] }
+    return $returnValue
  }
 
 Export-ModuleMember -function Get-TargetResource, Set-TargetResource, Test-TargetResource

@@ -9,16 +9,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 #
+
+# This sample configuration does the following
+# 1. Registers PowerShellGallery if it is not already
+# 2. Downloads GistProvider OneGet provider using Install-Package
+# 3. Downloads a Gist from source DFinke using Gist Provider
 configuration Sample_Install_Package
 {
     param
     (
-    #Target nodes to apply the configuration
-        [string[]]$NodeName = 'localhost',
-
-        #The name of the module
-        [Parameter(Mandatory)]
-        [string]$Package
+        #Target nodes to apply the configuration
+        [string[]]$NodeName = 'localhost'
     )
 
 
@@ -26,18 +27,40 @@ configuration Sample_Install_Package
 
     Node $NodeName
     {               
+        #register package source       
+        PackageManagementSource PSGallery
+        {
+
+            Ensure      = "Present"
+            Name        = "psgallery"
+            ProviderName= "PowerShellGet"
+            SourceUri   = "https://www.powershellgallery.com/api/v2/"  
+            InstallationPolicy ="Trusted"
+        }
+
         #Install a package from the Powershell gallery
-        PackageManagement MyPackage
+        PackageManagement GistProvider
         {
             Ensure            = "present" 
-            Name              = $Name
-        }                               
+            Name              = "gistprovider"
+            Source            = "PSGallery"
+            DependsOn         = "[PackageManagementSource]PSGallery"
+        }             
+        
+        PackageManagement PowerShellTeamOSSUpdateInfo
+        {
+            Ensure   = "present"
+            Name     = "Get-PSTOss.ps1"
+            ProviderName = "Gist"
+            Source   = "dfinke"
+            DependsOn = "[PackageManagement]GistProvider"
+        }                  
     } 
 }
 
 
 #Compile it
-Sample_Install_Package -Name "Json" 
+Sample_Install_Package 
 
 #Run it
 Start-DscConfiguration -path .\Sample_Install_Package -wait -Verbose -force 
