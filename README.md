@@ -129,7 +129,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 <br/>
 ####**Requirements**####
 
-Before you install this package, you must be running  [Windows Management Framework 5.0 Product Preview](https://www.microsoft.com/en-us/download/details.aspx?id=48729).
+Before you install this package, make sure you're running PowerShell 5.0+ on Windows 10 or via [Windows Management Framework 5.0](https://aka.ms/wmf5download) for other platforms. 
 
 <br/>
 ####**Installation**####
