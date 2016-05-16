@@ -238,6 +238,26 @@ Function SetupOneGetSourceTest
     InstallPester 
 }
 
+function SetupPackageManagementTest
+{
+    <#
+    .SYNOPSIS
+
+    This is a helper function for a PackageManagement test
+
+    #>
+
+    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
+
+    Import-ModulesToSetupTest -ModuleChildPath  "MSFT_PackageManagement\MSFT_PackageManagement.psm1"
+
+    SetupLocalRepository
+
+    # Install Pester and import it
+    InstallPester 
+
+}
+
 Function Import-ModulesToSetupTest
 {
     <#

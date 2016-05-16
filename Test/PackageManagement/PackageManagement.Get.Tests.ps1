@@ -15,27 +15,25 @@ $CurrentDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 #
 # Pre-Requisite: MyTestPackage.12.0.1.1, MyTestPackage.12.0.1, MyTestPackage.15.2.1 packages are available under the $LocalRepositoryPath. 
-# It's been taken care of by SetupNugetTest
+# It's been taken care of by SetupPackageManagementTest
 #
  
 # Calling the setup function 
-SetupNugetTest
+SetupPackageManagementTest
 
-Describe -Name "NugetPackage Get-TargetResource Basic Test" -Tags "BVT" {
+Describe -Name "PackageManagement Get-TargetResource Basic Test" -Tags "BVT" {
 
     BeforeEach {
 
-        #Remove all left over files if exists
-        Remove-Item "$($DestinationPath)" -Recurse -Force -ErrorAction SilentlyContinue
     }
 
     AfterEach {
  
     }     
 
-    Context "NugetPackage Get-TargetResource BVT" {
+    Context "PackageManagement Get-TargetResource BVT" {
 
-        #Mock Set-TargetResource/NugetPackage DSC Resource. The tests under this context use the below mock function
+        #Mock Set-TargetResource/PackageManagement DSC Resource. The tests under this context use the below mock function
         
         Mock Set-TargetResource  {
 
@@ -63,7 +61,7 @@ Describe -Name "NugetPackage Get-TargetResource Basic Test" -Tags "BVT" {
         It "Get-TargetResource with the Mandatory Parameters: Check Absent" {
 
             # Calling Get-TargetResource in the NugetPackage resource 
-            $result = MSFT_NugetPackage\Get-TargetResource -Name "MyTestPackage" -DestinationPath $DestinationPath -Verbose
+            $result = MSFT_PackageManagement\Get-TargetResource -Name "MyTestPackage" -Verbose
 
             # Validate the result
             $result.Ensure | should be "Absent"
@@ -73,7 +71,7 @@ Describe -Name "NugetPackage Get-TargetResource Basic Test" -Tags "BVT" {
             
             Set-TargetResource -name "MyTestPackage" -DestinationPath $DestinationPath  -RequiredVersion "12.0.1" -Ensure "Present" -Verbose
 
-            $result = MSFT_NugetPackage\Get-TargetResource -Name "MyTestPackage" -DestinationPath $destinationPath  -ErrorVariable ev
+            $result = MSFT_PackageManagement\Get-TargetResource -Name "MyTestPackage" -DestinationPath $destinationPath  -ErrorVariable ev
 
             #Validate the returned results
             $result.Ensure | should be "Present"
@@ -90,7 +88,7 @@ Describe -Name "NugetPackage Get-TargetResource Basic Test" -Tags "BVT" {
             Set-TargetResource -name "MyTestPackage" -DestinationPath $DestinationPath  -RequiredVersion "12.0.1" -Ensure "Present" -Verbose
 
             #provide a req version that exists, expect ensure=Present
-            $result = MSFT_NugetPackage\Get-TargetResource -Name "MyTestPackage" -DestinationPath $destinationPath -RequiredVersion "12.0.1" -ErrorVariable ev
+            $result = MSFT_PackageManagement\Get-TargetResource -Name "MyTestPackage" -DestinationPath $destinationPath -RequiredVersion "12.0.1" -ErrorVariable ev
 
             #Validate the returned results
             $result.Ensure | should be "Present"
@@ -103,7 +101,7 @@ Describe -Name "NugetPackage Get-TargetResource Basic Test" -Tags "BVT" {
             Set-TargetResource -name "MyTestPackage" -DestinationPath $DestinationPath  -RequiredVersion "12.0.1" -Ensure "Present" -Verbose
 
             #Provide a req version does not exist, expect Ensure=Absent
-            $result = MSFT_NugetPackage\Get-TargetResource -Name "MyTestPackage" -DestinationPath $destinationPath -RequiredVersion "10.11.12" -ErrorVariable ev
+            $result = MSFT_PackageManagement\Get-TargetResource -Name "MyTestPackage" -DestinationPath $destinationPath -RequiredVersion "10.11.12" -ErrorVariable ev
 
             #Validate the returned results
             $result.Ensure | should be "Absent"  
@@ -116,7 +114,7 @@ Describe -Name "NugetPackage Get-TargetResource Basic Test" -Tags "BVT" {
             Set-TargetResource -name "MyTestPackage" -DestinationPath $DestinationPath -RequiredVersion "12.0.1" -Ensure "Present" -Verbose
             Set-TargetResource -name "MyTestPackage" -DestinationPath $DestinationPath -RequiredVersion "15.2.1" -Ensure "Present" -Verbose
 
-            $result = MSFT_NugetPackage\Get-TargetResource -Name "MyTestPackage" -DestinationPath $destinationPath  -MaximumVersion "19.9" -ErrorVariable ev
+            $result = MSFT_PackageManagement\Get-TargetResource -Name "MyTestPackage" -DestinationPath $destinationPath  -MaximumVersion "19.9" -ErrorVariable ev
 
             $result.Ensure | should be "Present"
             $result.InstalledVersion | should be "15.2.1"  #1.8.2 is the only package -le maximumversion 1.9.9
@@ -128,7 +126,7 @@ Describe -Name "NugetPackage Get-TargetResource Basic Test" -Tags "BVT" {
             Set-TargetResource -name "MyTestPackage" -DestinationPath $DestinationPath -RequiredVersion "12.0.1" -Ensure "Present" -Verbose
             Set-TargetResource -name "MyTestPackage" -DestinationPath $DestinationPath -RequiredVersion "15.2.1" -Ensure "Present" -Verbose
 
-            $result = MSFT_NugetPackage\Get-TargetResource -Name "MyTestPackage" -DestinationPath $destinationPath  -MinimumVersion "12.0.1"
+            $result = MSFT_PackageManagement\Get-TargetResource -Name "MyTestPackage" -DestinationPath $destinationPath  -MinimumVersion "12.0.1"
 
             $result.Ensure | should be "Present"
             $result.InstalledVersion | should be "15.2.1"  #Get-package will return the latest version
@@ -142,7 +140,7 @@ Describe -Name "NugetPackage Get-TargetResource Basic Test" -Tags "BVT" {
             Set-TargetResource -name "MyTestPackage" -DestinationPath $DestinationPath -RequiredVersion "15.2.1" -Ensure "Present" -Verbose
 
             #will return the latest, ie 15.2.1
-            $result = MSFT_NugetPackage\Get-TargetResource -Name "MyTestPackage" -DestinationPath $destinationPath  -MinimumVersion "15.0"  -MaximumVersion "19.0"
+            $result = MSFT_PackageManagement\Get-TargetResource -Name "MyTestPackage" -DestinationPath $destinationPath  -MinimumVersion "15.0"  -MaximumVersion "19.0"
 
             $result.Ensure | should be "Present"
             $result.InstalledVersion | should be "15.2.1"  
@@ -151,6 +149,7 @@ Describe -Name "NugetPackage Get-TargetResource Basic Test" -Tags "BVT" {
     }#context
 }#Describe
 
+<#
 Describe -Name "NugetPackage Get-Dscconfiguration Error Cases" -Tags "RI" {
 
 
@@ -222,3 +221,4 @@ Describe -Name "NugetPackage Get-Dscconfiguration Error Cases" -Tags "RI" {
         throw "Expect VersionError but not happen"
     }
 }
+#>
