@@ -16,14 +16,16 @@ $CurrentDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 #
 # Pre-Requisite: MyTestPackage.12.0.1.1, MyTestPackage.12.0.1, MyTestPackage.15.2.1 packages are available under the $LocalRepositoryPath. 
-# It's been taken care of by SetupNugetTest
+# It's been taken care of by SetupPackageManagementTest
 #
  
 # Calling the setup function 
-SetupNugetTest
+SetupPackageManagementTest
 
+$AdditionalParameters = @{"Destination" = $DestinationPath}
+$AdditionalParameterCimInstanceArray = ConvertHashtableToArryCimInstance $AdditionalParameters
 
-Describe -Name  "NugetPackage Test-TargetResource Basic Tests" -Tags "BVT"{
+Describe -Name  "PackageManagement Test-TargetResource Basic Tests" -Tags "BVT"{
 
     BeforeEach {
 
@@ -36,7 +38,7 @@ Describe -Name  "NugetPackage Test-TargetResource Basic Tests" -Tags "BVT"{
     }
 
       
-    Context "NugetPackage Test-TargetResource with Mandatory Parameters" {
+    Context "PackageManagement Test-TargetResource with Mandatory Parameters" {
 
        Mock Set-TargetResource  {
 
@@ -67,7 +69,7 @@ Describe -Name  "NugetPackage Test-TargetResource Basic Tests" -Tags "BVT"{
             # It is expected Test-Target* returns false for ensure='Present'
             #
             # Calling Test-TargetResource in the NugetPackage resource 
-            $result = MSFT_NugetPackage\Test-TargetResource -Name "MyTestPackage" -DestinationPath $DestinationPath 
+            $result = MSFT_PackageManagement\Test-TargetResource -Name "MyTestPackage" -AdditionalParameters $AdditionalParameterCimInstanceArray 
 
             # Validate the result
             $result | should be $false
@@ -76,7 +78,7 @@ Describe -Name  "NugetPackage Test-TargetResource Basic Tests" -Tags "BVT"{
         It "Test-TargetResource: Check True" {
 
             # Calling Test-TargetResource in the NugetPackage resource 
-            $result = MSFT_NugetPackage\Test-TargetResource -Name "MyTestPackage" -DestinationPath $DestinationPath -Ensure Absent 
+            $result = MSFT_PackageManagement\Test-TargetResource -Name "MyTestPackage" -AdditionalParameters $AdditionalParameterCimInstanceArray -Ensure Absent 
 
             # Validate the result
             $result | should be $true
@@ -84,9 +86,9 @@ Describe -Name  "NugetPackage Test-TargetResource Basic Tests" -Tags "BVT"{
 
         It "Test-TargetResource with RequiredVersion: Check True" {
             
-            Set-TargetResource -name "MyTestPackage" -DestinationPath $DestinationPath  -RequiredVersion "12.0.1" -Ensure "Present" -Verbose
+            Set-TargetResource -name "MyTestPackage" -AdditionalParameters $AdditionalParameterCimInstanceArray  -RequiredVersion "12.0.1" -Ensure "Present" -Verbose
 
-            $result = MSFT_NugetPackage\Test-TargetResource -Name "MyTestPackage" -DestinationPath $destinationPath -RequiredVersion "12.0.1" 
+            $result = MSFT_PackageManagement\Test-TargetResource -Name "MyTestPackage" -AdditionalParameters $AdditionalParameterCimInstanceArray  -RequiredVersion "12.0.1" 
 
             #Validate the returned results
             $result | should be $true
@@ -95,10 +97,10 @@ Describe -Name  "NugetPackage Test-TargetResource Basic Tests" -Tags "BVT"{
         
         It "Test-TargetResource with InstalledVersion 12.0.1 but RequiredVersion 12.0.1.1: Check False" {
             
-            Set-TargetResource -name "MyTestPackage" -DestinationPath $DestinationPath  -RequiredVersion "12.0.1" -Ensure "Present" -Verbose
+            Set-TargetResource -name "MyTestPackage" -AdditionalParameters $AdditionalParameterCimInstanceArray  -RequiredVersion "12.0.1" -Ensure "Present" -Verbose
 
             #The requiredVersion does not exist, expect Ensure=Absent
-            $result = MSFT_NugetPackage\Test-TargetResource -Name "MyTestPackage" -DestinationPath $destinationPath -RequiredVersion "12.0.1.1" 
+            $result = MSFT_PackageManagement\Test-TargetResource -Name "MyTestPackage" -AdditionalParameters $AdditionalParameterCimInstanceArray -RequiredVersion "12.0.1.1" 
 
             #Validate the returned results
             $result | should be $false 
@@ -106,23 +108,22 @@ Describe -Name  "NugetPackage Test-TargetResource Basic Tests" -Tags "BVT"{
 
         It "Test-TargetResource with InstalledVersion 12.0.1.1 but RequiredVersion 12.0.1: Check False" {
             
-            Set-TargetResource -name "MyTestPackage" -DestinationPath $DestinationPath  -RequiredVersion "12.0.1.1" -Ensure "Present" -Verbose
+            Set-TargetResource -name "MyTestPackage" -AdditionalParameters $AdditionalParameterCimInstanceArray  -RequiredVersion "12.0.1.1" -Ensure "Present" -Verbose
 
             #Provide a req version does not exist, expect Ensure=Absent
-            $result = MSFT_NugetPackage\Test-TargetResource -Name "MyTestPackage" -DestinationPath $destinationPath -RequiredVersion "12.0.1" 
+            $result = MSFT_PackageManagement\Test-TargetResource -Name "MyTestPackage" -AdditionalParameters $AdditionalParameterCimInstanceArray  -RequiredVersion "12.0.1" 
 
             #Validate the returned results
             $result | should be $false 
         }
 
-        #Skip for the next WMF release for the bug fixes around MaximumVersion
-        It -Skip "Test-TargetResource with MaximumVersion: Check True" {
+        It "Test-TargetResource with MaximumVersion: Check True" {
             
-            Set-TargetResource -name "MyTestPackage" -DestinationPath $DestinationPath -RequiredVersion "12.0.1.1" -Ensure "Present" -Verbose
-            Set-TargetResource -name "MyTestPackage" -DestinationPath $DestinationPath -RequiredVersion "12.0.1" -Ensure "Present" -Verbose
-            Set-TargetResource -name "MyTestPackage" -DestinationPath $DestinationPath -RequiredVersion "15.2.1" -Ensure "Present" -Verbose
+            Set-TargetResource -name "MyTestPackage" -AdditionalParameters $AdditionalParameterCimInstanceArray -RequiredVersion "12.0.1.1" -Ensure "Present" -Verbose
+            Set-TargetResource -name "MyTestPackage" -AdditionalParameters $AdditionalParameterCimInstanceArray -RequiredVersion "12.0.1" -Ensure "Present" -Verbose
+            Set-TargetResource -name "MyTestPackage" -AdditionalParameters $AdditionalParameterCimInstanceArray -RequiredVersion "15.2.1" -Ensure "Present" -Verbose
 
-            $result = MSFT_NugetPackage\Test-TargetResource -Name "MyTestPackage" -DestinationPath $destinationPath  -MaximumVersion "12.9.9"
+            $result = MSFT_PackageManagement\Test-TargetResource -Name "MyTestPackage" -AdditionalParameters $AdditionalParameterCimInstanceArray -MaximumVersion "12.9.9"
 
             $result | should be $true
         }
