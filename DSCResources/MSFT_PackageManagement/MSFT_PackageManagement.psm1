@@ -53,6 +53,10 @@ function Get-TargetResource
     .PARAMETER ProviderName
     Specifies a package provider name to which to scope your package search. You can get package provider names 
     by running the Get-PackageProvider cmdlet.
+
+    .PARAMETER AdditionalParameters
+    Provider specific parameters that are passed as an Hashtable. For example, for NuGet provider you can
+    pass additional parameters like DestinationPath.
     #>
 
     [CmdletBinding()]
@@ -80,15 +84,29 @@ function Get-TargetResource
 
         [Parameter()]
         [System.String]
-        $ProviderName        
+        $ProviderName,
+        
+        [Parameter()]
+        [Microsoft.Management.Infrastructure.CimInstance[]]$AdditionalParameters        
     )
     
     $ensure = "Absent"
-    $PSBoundParameters.Remove("Source")
-    $PSBoundParameters.Remove("SourceCredential")
+    $null = $PSBoundParameters.Remove("Source")
+    $null = $PSBoundParameters.Remove("SourceCredential")
+
+    if ($AdditionalParameters)
+    {
+         foreach($instance in $AdditionalParameters)
+         {
+             Write-Verbose ('AdditionalParameter: {0}, AdditionalParameterValue: {1}' -f $instance.Key, $instance.Value)
+             $null = $PSBoundParameters.Add($instance.Key, $instance.Value)
+         }
+    }
+    $null = $PSBoundParameters.Remove("AdditionalParameters")
     
-    Write-Verbose -Message ($localizedData.StartGetPackage -f (GetMessageFromParameterDictionary $PSBoundParameters),$env:PSModulePath)
-    $result = GetPackageHelper @PSBoundParameters
+    $verboseMessage =$localizedData.StartGetPackage -f (GetMessageFromParameterDictionary $PSBoundParameters),$env:PSModulePath
+    Write-Verbose -Message $verboseMessage
+    $result = PackageManagement\Get-Package @PSBoundParameters -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
         
 
     if ($result.count -eq 1)
@@ -174,6 +192,10 @@ function Test-TargetResource
     .PARAMETER ProviderName
     Specifies a package provider name to which to scope your package search. You can get package provider names 
     by running the Get-PackageProvider cmdlet.
+
+    .PARAMETER AdditionalParameters
+    Provider specific parameters that are passed as an Hashtable. For example, for NuGet provider you can
+    pass additional parameters like DestinationPath.
     #>
 
     [CmdletBinding()]
@@ -205,13 +227,16 @@ function Test-TargetResource
 
         [Parameter()]
         [System.String]
-        $ProviderName   
+        $ProviderName,
+        
+        [Parameter()]
+        [Microsoft.Management.Infrastructure.CimInstance[]]$AdditionalParameters         
     )
 
     
     Write-Verbose -Message ($localizedData.StartTestPackage -f (GetMessageFromParameterDictionary $PSBoundParameters))
     $null = $PSBoundParameters.Remove("Ensure")
-
+    
     $temp = Get-TargetResource @PSBoundParameters
 
     if ($temp.Ensure -eq $ensure)
@@ -263,6 +288,10 @@ function Set-TargetResource
     .PARAMETER ProviderName
     Specifies a package provider name to which to scope your package search. You can get package provider names 
     by running the Get-PackageProvider cmdlet.
+
+    .PARAMETER AdditionalParameters
+    Provider specific parameters that are passed as an Hashtable. For example, for NuGet provider you can
+    pass additional parameters like DestinationPath.
     #>
 
     [CmdletBinding()]
@@ -293,30 +322,30 @@ function Set-TargetResource
 
         [Parameter()]
         [System.String]
-        $ProviderName        
+        $ProviderName,
+        
+        [Parameter()]
+        [Microsoft.Management.Infrastructure.CimInstance[]]$AdditionalParameters        
     )
 
     Write-Verbose -Message ($localizedData.StartSetPackage -f (GetMessageFromParameterDictionary $PSBoundParameters))
     
     $null = $PSBoundParameters.Remove("Ensure")
     Write-Verbose -Message ($localizedData.InstallPackageInSet -f (GetMessageFromParameterDictionary $PSBoundParameters))
+
+    if ($AdditionalParameters)
+    {
+         foreach($instance in $AdditionalParameters)
+         {
+             Write-Verbose ('AdditionalParameter: {0}, AdditionalParameterValue: {1}' -f $instance.Key, $instance.Value)
+             $null = $PSBoundParameters.Add($instance.Key, $instance.Value)
+         }
+    }
+
+    $null = $PSBoundParameters.Remove("AdditionalParameters")
     Install-Package @PSBoundParameters    
  }
-
- function GetPackageHelper
- {
-    param(
-        $Name,
-        $RequiredVersion,
-        $MinimumVersion,
-        $MaximumVersion,
-        $ProviderName
-    )
-
-    return PackageManagement\Get-Package @PSBoundParameters -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
-    
- }
-
+ 
  function GetMessageFromParameterDictionary
  {
     <#

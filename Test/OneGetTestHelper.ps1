@@ -251,6 +251,8 @@ function SetupPackageManagementTest
 
     Import-ModulesToSetupTest -ModuleChildPath  "MSFT_PackageManagement\MSFT_PackageManagement.psm1"
 
+    $script:DestinationPath = "$CurrentDirectory\TestResult\PackageManagementTest" 
+
     SetupLocalRepository
 
     # Install Pester and import it
@@ -704,4 +706,32 @@ function CreateTestModuleInLocalRepository
 
     # Remove the module under modulepath once we published it to the local repository
     Microsoft.PowerShell.Management\Remove-item -Path $modulePath -Recurse -Force -ErrorAction SilentlyContinue
+}
+
+function ConvertHashtableToArryCimInstance
+{
+  <#
+    .SYNOPSIS
+
+    This helper function is mainly used to convert AdditionalParameters of PackageMangement DSC resource
+    to Microsoft.Management.Infrastructure.CimInstance[]. This will enable writing DRTs for Get/Set/Test
+    methods.
+
+    #>
+    [OutputType([Microsoft.Management.Infrastructure.CimInstance[]])]
+    param([Hashtable] $AdditionalParameters = $(throw "AdditionalParameters cannot be null."))
+
+    [Microsoft.Management.Infrastructure.CimInstance[]] $result = [Microsoft.Management.Infrastructure.CimInstance[]]::new($AdditionalParameters.Count)
+
+    $index = 0
+    $AdditionalParameters.Keys | % {
+        $instance = New-CimInstance -ClassName MSFT_KeyValuePair -Namespace root/microsoft/Windows/DesiredStateConfiguration -Property @{
+            Key = $_
+            Value = $AdditionalParameters[$_]
+            } -ClientOnly
+        $result[$index] = $instance
+        $index++
+    }
+
+    $result
 }
