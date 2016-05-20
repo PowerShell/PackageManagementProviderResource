@@ -30,6 +30,10 @@ SetupPackageManagementTest -SetupPSModuleRepository
  
 Describe -Name  "PackageManagement Set-TargetResource Basic Test" -Tags "BVT" {
 
+    BeforeAll {
+        $script:OriginalRepository = CleanupRepository
+    }
+ 
     BeforeEach {
 
         #Remove all left over files if exists
@@ -38,7 +42,15 @@ Describe -Name  "PackageManagement Set-TargetResource Basic Test" -Tags "BVT" {
     }
 
     AfterEach {
+        
+    }
 
+    AfterAll {
+        # Remove all left over files if exists
+        Remove-Item "$PSModuleBase\MyTestModule" -Recurse -Force  -ErrorAction SilentlyContinue      
+        Remove-Item "$PSModuleBase\MyTestModule" -Recurse -Force  -ErrorAction SilentlyContinue     
+     
+        RestoreRepository $script:OriginalRepository
     }
 
     Context "PackageManagement Set-TargetResource Basic Test" {
