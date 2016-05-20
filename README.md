@@ -11,11 +11,57 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 
 #### Resources
 
+* **PackageManagement** – A generic PackageManagement provider that lets you download and install packages from any source. This provider  uses Install-Package & Get-Package cmdlets. You may have to use PackageManagementSource DSC resource to register non-default sources.
+
 * **NugetPackage** – lets you download packages from the NuGet source location (e.g., http://nuget.org/api/v2/), and install or uninstall the package.
 
 * **PSModule** – lets you download Windows PowerShell modules from the PowerShell Gallery, "PSGallery" (e.g., https://www.powershellgallery.com/api/v2/ ), and install them on your computer.
 
 * **PackageManagementSource** – lets you register or unregister a package source on your computer
+
+**PackageManagement** DSC resource has the following properties:
+<table>
+    <tr>
+        <td> <b>Property</b> </td>
+        <td><b>Description</b> </td>
+    </tr>
+    <tr>
+        <td>Name</td>
+        <td>Specifies the name of the Package to be installed or uninstalled.</td>
+    </tr>
+    <tr>
+    <td>Source</td>
+    <td>Specifies the name of the package source where the package can be found. This can either be a URI or a source registered with <a href="https://technet.microsoft.com/en-us/library/dn890701.aspx">Register-PackageSource cmdlet</a> or PackageManagementSource DSC resource. The DSC resource MSFT_PackageManagementSource can also register a package source.</td>
+    </tr>
+    <tr>
+    <td>Ensure</td>
+    <td>Determines whether the package is to be installed or uninstalled.</td>
+    </tr>
+    <tr>
+    <td>RequiredVersion</td>
+    <td>Specifies the exact version of the package that you want to install. If you do not specify this parameter, this DSC resource installs the newest available version of the package that also satisfies any maximum version specified by the MaximumVersion parameter.</td>
+    </tr>
+    <tr>
+    <td>MinimumVersion</td>
+    <td>Specifies the minimum allowed version of the package that you want to install. If you do not add this parameter, this DSC resource intalls the highest available version of the package that also satisfies any maximum specified version specified by the MaximumVersion parameter.</td>
+    </tr>
+    <tr>
+    <td>MaximumVersion</td>
+    <td>Specifies the maximum allowed version of the package that you want to install. If you do not specify this parameter, this DSC resource installs the highest-numbered available version of the package.</td>
+    </tr>
+    <tr>
+    <td>SourceCredential</td>
+    <td>Specifies a user account that has rights to install a package for a specified package provider or source.</td>
+    </tr>
+    <tr>
+    <td>ProviderName</td>
+    <td>Specifies a package provider name to which to scope your package search. You can get package provider names by running the <a href="https://technet.microsoft.com/en-us/library/dn890703.aspx">Get-PackageProvider cmdlet</a>.</td>
+    </tr>
+    <tr>
+    <td>AdditionalParameters</td>
+    <td>Provider specific parameters that are passed as an Hashtable. For example, for NuGet provider you can pass additional parameters like DestinationPath.</td>
+    </tr>
+</table>
 
 **NugetPackage** DSC resource has the following properties:
 <table>
@@ -129,7 +175,7 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
 <br/>
 ####**Requirements**####
 
-Before you install this package, you must be running  [Windows Management Framework 5.0 Product Preview](https://www.microsoft.com/en-us/download/details.aspx?id=48729).
+Before you install this package, you must be running  [Windows Management Framework 5.0 RTM(https://www.microsoft.com/en-us/download/details.aspx?id=50395).
 
 <br/>
 ####**Installation**####
@@ -138,7 +184,7 @@ To use the **PackageManagementProviderResource** module,
 * Copy the content of the download to the $env:ProgramFiles\WindowsPowerShell\Modules folder.
 
 To confirm installation,
-* Run **Get-DSCResource** to verify that NugetPackage, OneGetSource, PSModule are among the DSC Resources are listed in your DSC resources.
+* Run **Get-DSCResource** to verify that PackageManagement, NugetPackage, PackageManagementSource and PSModule are among the DSC Resources listed in your DSC resources.
 
 <br/>
 ####**Building the Code**####
@@ -154,7 +200,7 @@ To test the modules, run the following commands. The NuGetPackage resource is us
 * .\NugetPackage\NugetPackage.Set.Tests.ps1
 * .\NugetPackage\NugetPackage.Test.Tests.ps1
 
-You can repeat these commands similarly for testing PSModule and OneGetSource DSC resources.
+You can repeat these commands similarly for testing PackageManagement, PSModule and PackageManagementSource DSC resources.
 
 <br/>
 ####**Contributing to the Code**####
