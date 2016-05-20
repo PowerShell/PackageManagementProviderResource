@@ -9,235 +9,168 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 #
+
+
 $CurrentDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 .  "$CurrentDirectory\..\OneGetTestHelper.ps1"
 
+if (-not (IsAdmin))
+{
+  throw "This test script requires to be run from an elevated PowerShell session. Launch an elevated PowerShell session and try again."
+}
+
 #
-# Pre-Requisite: MyTestPackage.12.0.1.1, MyTestPackage.12.0.1, MyTestPackage.15.2.1 packages are available under the $LocalRepositoryPath. 
-# It's been taken care of by SetupNugetTest
+# Pre-Requisite: MyTestModule 1.1, 1.1.2, 3.2.1 modules are available under the $LocalRepositoryPath for testing purpose only.
+# It's been taken care of by SetupPackageManagementTest
 #
  
 # Calling the setup function 
-SetupNugetTest
+SetupPackageManagementTest -SetupPSModuleRepository
  
-Describe -Name  "NugetPackage Set-TargetResource Basic Test" -Tags "BVT" {
+Describe -Name  "PackageManagement Set-TargetResource Basic Test" -Tags "BVT" {
 
     BeforeEach {
 
         #Remove all left over files if exists
-        Remove-Item "$($DestinationPath)" -Recurse -Force -ErrorAction SilentlyContinue
-
+        Remove-Item "$PSModuleBase\MyTestModule" -Recurse -Force  -ErrorAction SilentlyContinue      
+        Remove-Item "$PSModuleBase\MyTestModule" -Recurse -Force  -ErrorAction SilentlyContinue     
     }
 
     AfterEach {
 
     }
 
-    Context "NugetPackage Set-TargetResource Basic Test" {
+    Context "PackageManagement Set-TargetResource Basic Test" {
 
+        It "Set, Test-TargetResource with Trusted Source, No Versions Specified: Check Installed" {
+           
+            #Register a local module repository to make the test run faster
+            RegisterRepository -Name "LocalRepository" -InstallationPolicy Trusted -Ensure Present
 
-        It "Set-TargetResource with RequiredVersion: Check Installed & UnInstalled" {
+            # 'BeforeEach' removes all specific modules under the $module path, so it is expected Set-Target* should success in the installation
+            MSFT_PackageManagement\Set-TargetResource -name "MyTestModule" -Source $LocalRepository  -Ensure Present -Verbose
 
-            RegisterPackageSource -Name "NugetTestSourceName" -InstallationPolicy Trusted  -Ensure Present -SourceUri $LocalRepositoryPath
+            # Validate the module is installed
+            Test-Path -Path "$PSModuleBase\MyTestModule\3.2.1" | should be $true
+            
+            # Uninstalling the module
+            MSFT_PackageManagement\Set-TargetResource -name "MyTestModule" -Source $LocalRepository  -Ensure Absent -Verbose
 
-            $result = MSFT_NugetPackage\Set-TargetResource  -Name "MyTestPackage"  `
-                                                            -DestinationPath $DestinationPath  `
-                                                            -RequiredVersion "12.0.1" `
-                                                            -Ensure Present
+            # Validate the module is uninstalled
+            $result = MSFT_PackageManagement\Test-TargetResource -name "MyTestModule" -Source $LocalRepository  -Ensure Absent
+            $result| should be $true
 
-            # Validate the package is installed
-            Test-Path -Path "$($DestinationPath)\MyTestPackage.12.0.1" | should be $true
-
-
-            # Calling Set-TargetResource in the NugetPackage resource to uninstall it 
-            $result = MSFT_NugetPackage\Set-TargetResource  -Name "MyTestPackage"  `
-                                                            -DestinationPath $DestinationPath  `
-                                                            -RequiredVersion "12.0.1" `
-                                                            -Ensure Absent
-
-            # Package should not be there
-            Test-Path -Path "$($DestinationPath)\MyTestPackage.12.0.1" | should be $false
+            Test-Path -Path "$PSModuleBase\MyTestModule\3.2.1" | should be $false
         }
 
-        It "Set-TargetResource with Trusted Source, No Versions Specified: Check Installed" {
+        It "Set, Test-TargetResource with Trusted Source, No respository Specified: Check Installed" {
            
-            # Calling Set-TargetResource in the NugetPackage resource with trusted policy
+            #Register a local module repository to make the test run faster
+            RegisterRepository -Name "LocalRepository" -InstallationPolicy Trusted -Ensure Present
 
-             RegisterPackageSource -Name "NugetTestSourceName" -InstallationPolicy Trusted  -Ensure Present -SourceUri $LocalRepositoryPath
+            # 'BeforeEach' removes all specific modules under the $module path, so it is expected Set-Target* should success in the installation
+            MSFT_PackageManagement\Set-TargetResource -name "MyTestModule" -Ensure Present -Verbose
 
-            # User's installation policy is untrusted by default
-            $result = MSFT_NugetPackage\Set-TargetResource -Name "MyTestPackage" -DestinationPath $DestinationPath -Source "NugetTestSourceName"
+            # Validate the module is installed
+            Test-Path -Path "$PSModuleBase\MyTestModule\3.2.1" | should be $true
 
-            # Validate the package is installed. 2.1.3 is the latest in the local source
+            # Uninstalling the module
+            MSFT_PackageManagement\Set-TargetResource -name "MyTestModule" -Ensure Absent -Verbose
 
-            Test-Path -Path "$($DestinationPath)\MyTestPackage.15.2.1" | should be $false
-        }
-    
- 
+            # Validate the module is uninstalled
+            $result = MSFT_PackageManagement\Test-TargetResource -name "MyTestModule" -Ensure Absent
 
-        It "Set-TargetResource with untrusted Source and trusted user policy: Check Warning & Installed" {
-           
-            # Calling Set-TargetResource in the NugetPackage resource with untrusted policy
-
-             RegisterPackageSource -Name "NugetTestSourceName" -Ensure Present -SourceUri $LocalRepositoryPath
-
-            # User's installation policy is trusted
-            $result = MSFT_NugetPackage\Set-TargetResource  -Name "MyTestPackage" `
-                                                            -DestinationPath $DestinationPath `
-                                                            -Source "NugetTestSourceName" `
-                                                            -InstallationPolicy Trusted `
-                                                            -WarningVariable wv
-
-
-            if ($wv)
-            {
-                # Check the warning message
-                $wv -imatch "untrusted repository"
-                               
-                # The package should be installed
-                $result = MSFT_NugetPackage\Test-TargetResource -name "MyTestPackage" -DestinationPath $DestinationPath -Ensure "Present" -Source "NugetTestSourceName"
-                
-                $result| should be $true
-
-                return
-            }
-           
-            Throw "Expecting InstallationPolicyWarning but not happen" 
- 
+            $result| should be $true
         }
 
-               
-        It "Set-TargetResource with mulitple sources containing the same package: Check Installed" {
+        It "Set, Test-TargetResource with multiple sources and versions of a modules: Check Installed" {
            
+            # Registering multiple source
+
+            $returnVal = $null
+
             try
             {
-                # registering multiple source
-                RegisterPackageSource -Name "NugetTestSourceName10"   -Ensure Present -SourceUri $LocalRepositoryPath 
-                RegisterPackageSource -Name "NugetTestSourceName20"   -Ensure Present -SourceUri $LocalRepositoryPath -InstallationPolicy Trusted
-                RegisterPackageSource -Name "NugetTestSourceName30"   -Ensure Present -SourceUri $LocalRepositoryPath 
+                $returnVal = CleanupRepository
+                
+                RegisterRepository -Name "LocalRepository1" -InstallationPolicy Untrusted -Ensure Present -SourceLocation $LocalRepositoryPath1 -PublishLocation $LocalRepositoryPath1
 
+                RegisterRepository -Name "LocalRepository2" -InstallationPolicy Trusted -Ensure Present -SourceLocation $LocalRepositoryPath2 -PublishLocation $LocalRepositoryPath2
+
+                RegisterRepository -Name "LocalRepository3" -InstallationPolicy Untrusted -Ensure Present -SourceLocation $LocalRepositoryPath3 -PublishLocation $LocalRepositoryPath3
+                
                 # User's installation policy is untrusted
-                $result = MSFT_NugetPackage\Set-TargetResource -Name "MyTestPackage" -DestinationPath $DestinationPath
+                MSFT_PackageManagement\Set-TargetResource -name "MyTestModule" -Ensure "Present" -Verbose -Source "LocalRepository2"
 
-                # The package should be installed
-                MSFT_NugetPackage\Test-TargetResource -Name "MyTestPackage" -DestinationPath $destinationPath -Source "NugetTestSourceName20" | should be $true
+                # The module from the trusted source should be installed
+                Get-InstalledModule MyTestModule | % Repository | should be "LocalRepository2"
             }
             finally
             {
-                #unregister them
-                RegisterPackageSource -Name "NugetTestSourceName10"   -Ensure Absent -SourceUri $LocalRepositoryPath 
-                RegisterPackageSource -Name "NugetTestSourceName20"   -Ensure Absent -SourceUri $LocalRepositoryPath -InstallationPolicy Trusted
-                RegisterPackageSource -Name "NugetTestSourceName30"   -Ensure Absent -SourceUri $LocalRepositoryPath 
+                RestoreRepository -RepositoryInfo $returnVal
+                # Unregistering the repository sources
+            
+                RegisterRepository -Name "LocalRepository1" -Ensure Absent -SourceLocation $LocalRepositoryPath1 -PublishLocation $LocalRepositoryPath1
+
+                RegisterRepository -Name "LocalRepository2" -Ensure Absent -SourceLocation $LocalRepositoryPath2 -PublishLocation $LocalRepositoryPath2
+
+                RegisterRepository -Name "LocalRepository3" -Ensure Absent -SourceLocation $LocalRepositoryPath3 -PublishLocation $LocalRepositoryPath3
             }
-
-        }
-       
-        It "Set-TargetResource with SourceCredential: Check Installed" {
-           
-            $credential = (CreateCredObject -Name ".\Administrator" -PSCode "MassRules!")
-
-            # Calling Set-TargetResource in the NugetPackage resource with SourceCredential
-            $result = MSFT_NugetPackage\Set-TargetResource  -Name "MyTestPackage" `
-                                                            -DestinationPath $DestinationPath `
-                                                            -Source $LocalRepositoryPath `
-                                                            -SourceCredential $credential `
-                                                            -InstallationPolicy Trusted
-
-            # Validate the package is installed
-            MSFT_NugetPackage\Test-TargetResource -Name "MyTestPackage" -DestinationPath $destinationPath -Source "NugetTestSourceName" | should be $true
-        }
-        
+        }  
+                    
     }#context
 
-}#Describe
+    
+    Context "PackageManagement Set-TargetResource Error Cases" {
 
-Describe -Name "NugetPackage Set-TargetResource Error Cases" -Tags "RI" {
+        #Register a local module repository to make the test run faster
+        RegisterRepository -Name "LocalRepository" -InstallationPolicy Trusted -Ensure Present
 
-    BeforeEach {
+        It "Set-TargetResource with module not found for the install: Check Error" {
 
-        #Remove all left over files if exists
-        Remove-Item "$($DestinationPath)" -Recurse -Force -ErrorAction SilentlyContinue
-
-        RegisterPackageSource -Name "NugetTestSourceName" -Ensure Present -SourceUri $LocalRepositoryPath -InstallationPolicy Trusted
-    }
-
-    AfterEach {
-        RegisterPackageSource -Name "NugetTestSourceName" -Ensure Absent -SourceUri $LocalRepositoryPath
-    }
-
-
-    Context "NugetPackage Set-TargetResource Error Cases" {
-            
-        It "Set-TargetResource with package not found for the install: Check Error" {
-
-            #every slow need mock
             try
             {
-                # None-exist package for install
-                $result = MSFT_NugetPackage\Set-TargetResource -Name "MyTestPackageyyyy" -DestinationPath $DestinationPath -Ensure Present -ErrorAction SilentlyContinue
-                
+                # The module does not exist
+                MSFT_PackageManagement\Set-TargetResource -name "NonExistModule" -Ensure Present -ErrorAction SilentlyContinue  2>&1
             }
-            Catch
+            catch
             {
                 #Expect fail to install.
-                $_.FullyQualifiedErrorId | should be "PackageNotFoundInRepository"
+                $_.FullyQualifiedErrorId | should be "NoMatchFoundForCriteria,Microsoft.PowerShell.PackageManagement.Cmdlets.InstallPackage"
                 return
             }
    
-            Throw "Expecting PackageNotFoundInRepository but not happen" 
+            Throw "Expected 'ModuleNotFoundInRepository' exception did not happen"  
         }
 
-          
-        It "Set-TargetResource with package not found for the uninstall: Check Error" {
-           
-            # Create a folder that is mimicking the package is installed 
-            if (-not (Test-Path -Path $DestinationPath))
-            {
-                New-Item -Path $DestinationPath
-            } 
+        
+        It "Set , Test-TargetResource: Check Absent and False" {
 
+            # Calling Set-TargetResource to uninstall the MyTestModule module
             try
             {
-                # None-exist package for uninstall
-                $result = MSFT_NugetPackage\Set-TargetResource -Name "MyTestPackageyyyy" -DestinationPath $DestinationPath -Ensure Absent -ErrorAction SilentlyContinue
+                MSFT_PackageManagement\Set-TargetResource -name "MyTestModule" -Source $LocalRepository -RequiredVersion "1.1.2" -Ensure "Absent" -Verbose
             }
-            Catch
+            catch
             {
-                #Expect fail to install.
-                $_.FullyQualifiedErrorId | should be "PackageNotFound"
-                return
-            } 
-            
-            Throw "Expecting PackageNotFound but not happen"  
-        }                   
-     
-        It "Set-TargetResource with Untrusted User InstallationPolicy and Source: Check Error" {
-            
-            # No install will happen if both user and source are untrusted
-
-            RegisterPackageSource -Name "NugetTestSourceName"  -Ensure Present -SourceUri $LocalRepositoryPath
-
-            Try
-            {
-                # User's installation policy is untrusted.
-                $result = MSFT_NugetPackage\Set-TargetResource -Name "MyTestPackage" `
-                                                                -DestinationPath $DestinationPath `
-                                                                -Source "NugetTestSourceName" `
-                                                                -InstallationPolicy Untrusted `
-                                                                -ErrorVariable ev
-
-            }
-            Catch
-            {
-                #Expect fail to install.
-                $_.FullyQualifiedErrorId | should be "InstallationPolicyFailed"
-                return
+                if ($_.FullyQualifiedErrorId -ieq "NoMatchFound,Microsoft.PowerShell.PackageManagement.Cmdlets.UninstallPackage")
+                {
+                    #The module is not installed. Ignore the error
+                }
+                else
+                {
+                    throw
+                }
             }
 
-            
-            Throw "Expecting InstallationPolicyFailed but not happen"            
-        } 
+            # Calling Get-TargetResource in the PSModule resource 
+            $result = MSFT_PackageManagement\Test-TargetResource -Name "MyTestModule" -Source $LocalRepository -RequiredVersion "1.1.2"
 
+            # Validate the result
+            $result | should be $false
+
+        }
+       
     }#context
 }#Describe

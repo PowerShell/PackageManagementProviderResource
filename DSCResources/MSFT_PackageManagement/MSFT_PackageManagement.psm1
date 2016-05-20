@@ -331,8 +331,7 @@ function Set-TargetResource
     Write-Verbose -Message ($localizedData.StartSetPackage -f (GetMessageFromParameterDictionary $PSBoundParameters))
     
     $null = $PSBoundParameters.Remove("Ensure")
-    Write-Verbose -Message ($localizedData.InstallPackageInSet -f (GetMessageFromParameterDictionary $PSBoundParameters))
-
+    
     if ($AdditionalParameters)
     {
          foreach($instance in $AdditionalParameters)
@@ -342,8 +341,24 @@ function Set-TargetResource
          }
     }
 
-    $null = $PSBoundParameters.Remove("AdditionalParameters")
-    Install-Package @PSBoundParameters    
+    $PSBoundParameters.Remove("AdditionalParameters")
+
+       
+        # We do not want others to control the behavior of ErrorAction
+        # while calling Install-Package/Uninstall-Package.
+        $PSBoundParameters.Remove("ErrorAction")
+        if ($Ensure -eq "Present")
+        {
+            PackageManagement\Install-Package @PSBoundParameters -ErrorAction Stop
+        }   
+        else
+        {
+            # we dont source location for uninstalling an already
+            # installed package
+            $PSBoundParameters.Remove("Source")
+            # Ensure is Absent
+            PackageManagement\Uninstall-Package @PSBoundParameters -ErrorAction Stop
+        }
  }
  
  function GetMessageFromParameterDictionary

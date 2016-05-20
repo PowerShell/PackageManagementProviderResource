@@ -246,6 +246,7 @@ function SetupPackageManagementTest
     This is a helper function for a PackageManagement test
 
     #>
+    param([switch]$SetupPSModuleRepository)
 
     Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
 
@@ -254,6 +255,11 @@ function SetupPackageManagementTest
     $script:DestinationPath = "$CurrentDirectory\TestResult\PackageManagementTest" 
 
     SetupLocalRepository
+    if ($SetupPSModuleRepository) 
+    {
+        SetupLocalRepository -PSModule 
+        $script:PSModuleBase = "$env:ProgramFiles\windowspowershell\modules"
+    }
 
     # Install Pester and import it
     InstallPester 
@@ -287,7 +293,8 @@ Function Import-ModulesToSetupTest
 
     $modulePath = Microsoft.PowerShell.Management\Join-Path -Path $script:Module.ModuleBase -ChildPath $moduleChildPath
 
-    Import-Module -Name "$($modulePath)"  
+    # Using -Force to reload the module (while writing tests..it is common to change product code)
+    Import-Module -Name "$($modulePath)"  -Force
     
     #c:\Program Files\WindowsPowerShell\Modules
     $script:InstallationFolder = "$($script:Module.ModuleBase)" 
@@ -735,3 +742,24 @@ function ConvertHashtableToArryCimInstance
 
     $result
 }
+
+function IsAdmin
+{
+    <#
+    .SYNOPSIS
+        Checks whether the current session is Elevated. Used for test suites which has this
+        requirement   
+    #>
+    [OutputType([bool])]
+    
+    param()
+        try {
+        $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
+        $principal = New-Object Security.Principal.WindowsPrincipal -ArgumentList $identity
+        return $principal.IsInRole( [Security.Principal.WindowsBuiltInRole]::Administrator )
+    } catch {
+    }
+
+    return $false
+}
+
