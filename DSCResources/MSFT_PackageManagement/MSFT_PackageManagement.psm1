@@ -162,7 +162,8 @@ function Test-TargetResource
 
     This DSC resource provides a mechanism to download and install packages on a computer. 
 
-    Get-TargetResource returns the current state of the resource.
+    Test-TargetResource returns a boolean which determines whether the resource is in
+    desired state or not.
 
     .PARAMETER Name
     Specifies the name of the Package to be installed or uninstalled.
@@ -258,7 +259,7 @@ function Set-TargetResource
 
     This DSC resource provides a mechanism to download and install packages on a computer. 
 
-    Get-TargetResource returns the current state of the resource.
+    Set-TargetResource either intalls or uninstall a package as defined by the vaule of Ensure parameter.
 
     .PARAMETER Name
     Specifies the name of the Package to be installed or uninstalled.
