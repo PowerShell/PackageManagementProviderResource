@@ -238,6 +238,34 @@ Function SetupOneGetSourceTest
     InstallPester 
 }
 
+function SetupPackageManagementTest
+{
+    <#
+    .SYNOPSIS
+
+    This is a helper function for a PackageManagement test
+
+    #>
+    param([switch]$SetupPSModuleRepository)
+
+    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
+
+    Import-ModulesToSetupTest -ModuleChildPath  "MSFT_PackageManagement\MSFT_PackageManagement.psm1"
+
+    $script:DestinationPath = "$CurrentDirectory\TestResult\PackageManagementTest" 
+
+    SetupLocalRepository
+    if ($SetupPSModuleRepository) 
+    {
+        SetupLocalRepository -PSModule 
+        $script:PSModuleBase = "$env:ProgramFiles\windowspowershell\modules"
+    }
+
+    # Install Pester and import it
+    InstallPester 
+
+}
+
 Function Import-ModulesToSetupTest
 {
     <#
@@ -265,7 +293,8 @@ Function Import-ModulesToSetupTest
 
     $modulePath = Microsoft.PowerShell.Management\Join-Path -Path $script:Module.ModuleBase -ChildPath $moduleChildPath
 
-    Import-Module -Name "$($modulePath)"  
+    # Using -Force to reload the module (while writing tests..it is common to change product code)
+    Import-Module -Name "$($modulePath)"  -Force
     
     #c:\Program Files\WindowsPowerShell\Modules
     $script:InstallationFolder = "$($script:Module.ModuleBase)" 
@@ -685,3 +714,52 @@ function CreateTestModuleInLocalRepository
     # Remove the module under modulepath once we published it to the local repository
     Microsoft.PowerShell.Management\Remove-item -Path $modulePath -Recurse -Force -ErrorAction SilentlyContinue
 }
+
+function ConvertHashtableToArryCimInstance
+{
+  <#
+    .SYNOPSIS
+
+    This helper function is mainly used to convert AdditionalParameters of PackageMangement DSC resource
+    to Microsoft.Management.Infrastructure.CimInstance[]. This will enable writing DRTs for Get/Set/Test
+    methods.
+
+    #>
+    [OutputType([Microsoft.Management.Infrastructure.CimInstance[]])]
+    param([Hashtable] $AdditionalParameters = $(throw "AdditionalParameters cannot be null."))
+
+    [Microsoft.Management.Infrastructure.CimInstance[]] $result = [Microsoft.Management.Infrastructure.CimInstance[]]::new($AdditionalParameters.Count)
+
+    $index = 0
+    $AdditionalParameters.Keys | % {
+        $instance = New-CimInstance -ClassName MSFT_KeyValuePair -Namespace root/microsoft/Windows/DesiredStateConfiguration -Property @{
+            Key = $_
+            Value = $AdditionalParameters[$_]
+            } -ClientOnly
+        $result[$index] = $instance
+        $index++
+    }
+
+    $result
+}
+
+function IsAdmin
+{
+    <#
+    .SYNOPSIS
+        Checks whether the current session is Elevated. Used for test suites which has this
+        requirement   
+    #>
+    [OutputType([bool])]
+    
+    param()
+        try {
+        $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
+        $principal = New-Object Security.Principal.WindowsPrincipal -ArgumentList $identity
+        return $principal.IsInRole( [Security.Principal.WindowsBuiltInRole]::Administrator )
+    } catch {
+    }
+
+    return $false
+}
+

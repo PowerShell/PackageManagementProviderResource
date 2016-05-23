@@ -14,7 +14,7 @@ Import-LocalizedData -BindingVariable LocalizedData -filename MSFT_PSModule.stri
 Import-Module -Name "$PSScriptRoot\..\OneGetHelper.psm1"
 
 #DSC Resource for the $CurrentProviderName
-$CurrentProviderName="PSModule"
+$CurrentProviderName="PowerShellGet"
 
 
 #Return the current state of the resource
@@ -188,7 +188,7 @@ function Test-TargetResource
         $MinimumVersion
     )
 
-    Write-Debug -Message  "Calling Get-TargetResource"
+    Write-Debug -Message  "Calling Test-TargetResource"
 
     $extractedArguments = ExtractArguments -FunctionBoundParameters $PSBoundParameters `
                                            -ArgumentNames ("Name", "Repository", "MinimumVersion", "RequiredVersion")
@@ -199,12 +199,12 @@ function Test-TargetResource
     #
     if ($status.Ensure -ieq $Ensure)
     {
-        Write-Verbose -Message ($localizedData.InDesiredState -f $($Name))            
+        Write-Verbose -Message ($localizedData.InDesiredState -f $Name)            
         return $true       
     }
     else
     {
-        Write-Verbose -Message ($localizedData.NotInDesiredState -f $($Name))            
+        Write-Verbose -Message ($localizedData.NotInDesiredState -f $Name)            
         return $false
     }      
 }
