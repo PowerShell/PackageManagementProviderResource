@@ -32,7 +32,7 @@ configuration Sample_Install_Package
         {
 
             Ensure      = "Present"
-            Name        = "psgallery"
+            Name        = "psgallery1"
             ProviderName= "PowerShellGet"
             SourceUri   = "https://www.powershellgallery.com/api/v2/"  
             InstallationPolicy ="Trusted"
@@ -43,7 +43,7 @@ configuration Sample_Install_Package
         {
             Ensure            = "present" 
             Name              = "gistprovider"
-            Source            = "PSGallery"
+            Source            = "PSGallery1"
             DependsOn         = "[PackageManagementSource]PSGallery"
         }             
         

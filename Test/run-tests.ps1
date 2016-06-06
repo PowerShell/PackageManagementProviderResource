@@ -1,2 +1,2 @@
-cd "c:\projects\PackageManagementProviderResource\Test"
+cd "$PSScriptRoot"
 invoke-pester
