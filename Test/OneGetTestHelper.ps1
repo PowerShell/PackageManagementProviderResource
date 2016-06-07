@@ -55,6 +55,11 @@ configuration Sample_InstallPester
         [Parameter(Mandatory)]
         [string]$DestinationPath       
     )
+    
+    #TODO: Remove this after investigating why
+    #the tests fail with AppVeyor
+    $message = (Get-Module -ListAvailable PackageManagementProviderResource -Verbose | % { "{0} {1} {2}" -f $_.Name, $_.Path, $_.Version }) | out-string
+    Write-Error $message
 
     Import-DscResource -Module PackageManagementProviderResource
 
