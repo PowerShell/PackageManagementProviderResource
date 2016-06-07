@@ -68,15 +68,19 @@ function Get-TargetResource
         $Name,
 
         [Parameter()]
+        [System.String]
         $RequiredVersion,
         
         [Parameter()]
+        [System.String]
         $MinimumVersion,
 
         [Parameter()]
+        [System.String]
         $MaximumVersion,
 
         [Parameter()]
+        [System.String]
         $Source,
 
         [Parameter()]
@@ -208,15 +212,19 @@ function Test-TargetResource
         $Name,
 
         [Parameter()]
+        [System.String]
         $RequiredVersion,
         
         [Parameter()]
+        [System.String]
         $MinimumVersion,
 
         [Parameter()]
+        [System.String]
         $MaximumVersion,
 
         [Parameter()]
+        [System.String]
         $Source,
 
         [Parameter()]
@@ -303,15 +311,19 @@ function Set-TargetResource
         $Name,
 
         [Parameter()]
+        [System.String]
         $RequiredVersion,
         
         [Parameter()]
+        [System.String]
         $MinimumVersion,
 
         [Parameter()]
+        [System.String]
         $MaximumVersion,
 
         [Parameter()]
+        [System.String]
         $Source,
 
         [Parameter()]
