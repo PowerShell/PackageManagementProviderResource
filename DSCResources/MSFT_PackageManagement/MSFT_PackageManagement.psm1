@@ -71,9 +71,11 @@ function Get-TargetResource
         [System.String]
         $RequiredVersion,
         
+        [Parameter()]
         [System.String]
         $MinimumVersion,
 
+        [Parameter()]
         [System.String]
         $MaximumVersion,
 
