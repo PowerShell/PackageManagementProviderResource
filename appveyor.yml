@@ -25,6 +25,10 @@ build_script:
 
 - ps: Copy-Item -Recurse "$env:APPVEYOR_BUILD_FOLDER\*" "$Env:ProgramFiles\WindowsPowerShell\Modules\PackageManagementProviderResource" -Force -Verbose
 
+- ps: Get-Module -ListAvailable
+
+- ps: Write-Verbose -Verbose "$env:PSModulepath"
+
 
 #---------------------------------#
 #      test configuration         #
