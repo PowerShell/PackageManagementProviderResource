@@ -11,7 +11,7 @@
 #
 @{
 
-ModuleVersion = '1.0.2'
+ModuleVersion = '1.0.3'
 
 GUID = '50615c4b-72be-42a7-81e1-8c8747238ce8'
 

@@ -293,6 +293,11 @@ function Set-TargetResource
                                                -ArgumentNames ("Name","ProviderName", "Location", "Credential", "Trusted")   
         
         Write-Verbose -Message ($localizedData.StartRegisterPackageSource -f $($Name)) 
+
+        if ($name -eq "psgallery")
+        {
+           $extractedArguments.Remove("Location")
+        }
                                        
         PackageManagement\Register-PackageSource @extractedArguments -Force -ErrorVariable ev  
             
