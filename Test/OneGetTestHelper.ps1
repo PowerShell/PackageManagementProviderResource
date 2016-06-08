@@ -56,7 +56,7 @@ configuration Sample_InstallPester
         [string]$DestinationPath       
     )
 
-    Import-DscResource -Module PackageManagementProviderResource
+    Import-DscResource -Module PackageManagementProviderResource -ModuleVersion 1.0.3
 
     Node "localhost"
     {
@@ -96,7 +96,7 @@ Function InstallPester
     Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
 
     # Check if the Pester have installed already under Program Files\WindowsPowerShell\Modules\Pester
-    $pester = Get-Module -Name "Pester" -ListAvailable
+    $pester = Get-Module -Name "Pester" -ListAvailable | select -first 1
 
     if ($pester.count -ge 1)
     {
