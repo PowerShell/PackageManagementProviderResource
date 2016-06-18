@@ -56,7 +56,7 @@ configuration Sample_InstallPester
         [string]$DestinationPath       
     )
 
-    Import-DscResource -Module PackageManagementProviderResource
+    Import-DscResource -Module PackageManagementProviderResource -ModuleVersion 1.0.3
 
     Node "localhost"
     {
@@ -93,14 +93,14 @@ Function InstallPester
 
     #>
 
-    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
+    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'") -Verbose
 
     # Check if the Pester have installed already under Program Files\WindowsPowerShell\Modules\Pester
-    $pester = Get-Module -Name "Pester" -ListAvailable
+    $pester = Get-Module -Name "Pester" -ListAvailable | select -first 1
 
     if ($pester.count -ge 1)
     {
-        Write-Verbose -Message "Pester has already installed under $($pester.ModuleBase)" 
+        Write-Verbose -Message "Pester has already installed under $($pester.ModuleBase)" -Verbose
 
         Import-module -Name "$($pester.ModuleBase)\Pester.psd1"          
     }
@@ -140,7 +140,7 @@ Function SetupLocalRepository
         [Switch]$PSModule
     )
 
-    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
+    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'") -Verbose
     
     # Create the LocalRepository path if does not exist
     if (-not ( Test-Path -Path $script:LocalRepositoryPath))
@@ -174,9 +174,9 @@ Function SetupLocalRepository
     }
 
     # Replica the repository    
-    Copy-Item -Path "$script:LocalRepositoryPath\*" -Destination $script:LocalRepositoryPath1 -Recurse -force 
-    Copy-Item -Path "$script:LocalRepositoryPath\*" -Destination $script:LocalRepositoryPath2 -Recurse -force     
-    Copy-Item -Path "$script:LocalRepositoryPath\*" -Destination $script:LocalRepositoryPath3 -Recurse -force
+    Copy-Item -Path "$script:LocalRepositoryPath\*" -Destination $script:LocalRepositoryPath1 -Recurse -force -Verbose
+    Copy-Item -Path "$script:LocalRepositoryPath\*" -Destination $script:LocalRepositoryPath2 -Recurse -force -Verbose
+    Copy-Item -Path "$script:LocalRepositoryPath\*" -Destination $script:LocalRepositoryPath3 -Recurse -force -Verbose
 }
 
 Function SetupPSModuleTest
@@ -188,7 +188,7 @@ Function SetupPSModuleTest
 
     #>
 
-    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
+    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'") -Verbose
 
     #Need to import resource MSFT_PSModule.psm1
     Import-ModulesToSetupTest -ModuleChildPath  "MSFT_PSModule\MSFT_PSModule.psm1"  
@@ -207,7 +207,7 @@ Function SetupNugetTest
     This is a helper function for a Nuget test
 
     #>
-    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
+    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'") -Verbose
 
     #Import MSFT_NugetPackage.psm1 module
     Import-ModulesToSetupTest -ModuleChildPath  "MSFT_NugetPackage\MSFT_NugetPackage.psm1"
@@ -228,7 +228,7 @@ Function SetupOneGetSourceTest
     This is a helper function for a PackageManagementSource test
 
     #>
-    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
+    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'") -Verbose
 
     Import-ModulesToSetupTest -ModuleChildPath  "MSFT_PackageManagementSource\MSFT_PackageManagementSource.psm1"
 
@@ -248,7 +248,7 @@ function SetupPackageManagementTest
     #>
     param([switch]$SetupPSModuleRepository)
 
-    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
+    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'") -Verbose
 
     Import-ModulesToSetupTest -ModuleChildPath  "MSFT_PackageManagement\MSFT_PackageManagement.psm1"
 
@@ -285,7 +285,7 @@ Function Import-ModulesToSetupTest
 
     )
   
-    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
+    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'") -Verbose
 
     $moduleChildPath="DSCResources\$($ModuleChildPath)"
 
@@ -344,7 +344,7 @@ function RegisterRepository
         $Ensure="Present"
     )
 
-    Write-Verbose -Message "RegisterRepository called" 
+    Write-Verbose -Message "RegisterRepository called" -Verbose
 
     # Calling the following to trigger Bootstrap provider for the first time use PackageManagement
     Get-PackageSource -ProviderName Nuget -ForceBootstrap -WarningAction Ignore 
@@ -406,7 +406,7 @@ function RestoreRepository
         $RepositoryInfo
     )
 
-    Write-Verbose -Message "RestoreRepository called"  
+    Write-Verbose -Message "RestoreRepository called"  -Verbose
        
     foreach ($repository in $RepositoryInfo.Keys)
     {
@@ -439,7 +439,7 @@ function CleanupRepository
 
     #>
 
-    Write-Verbose -Message "CleanupRepository called" 
+    Write-Verbose -Message "CleanupRepository called" -Verbose
 
     $returnVal = @{}
     $psrepositories = PowerShellGet\get-PSRepository
@@ -524,7 +524,7 @@ function RegisterPackageSource
         $Ensure="Present"
     )
 
-    Write-Verbose -Message "Calling RegisterPackageSource"
+    Write-Verbose -Message "Calling RegisterPackageSource" -Verbose
 
     #import the OngetSource module
     Import-ModulesToSetupTest -ModuleChildPath  "MSFT_PackageManagementSource\MSFT_PackageManagementSource.psm1"
@@ -582,7 +582,7 @@ Function UnRegisterSource
         $ProviderName="Nuget"
     )
 
-    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
+    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'") -Verbose
 
     $getResult = MSFT_PackageManagementSource\Get-TargetResource -Name $name -providerName $ProviderName -SourceUri $SourceUri -Verbose
 
@@ -602,7 +602,7 @@ Function UnRegisterAllSource
 
     #>
 
-    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
+    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'") -Verbose
 
     $sources = PackageManagement\Get-PackageSource
 
@@ -641,7 +641,7 @@ function CreateCredObject
         )
 
 
-    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
+    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'") -Verbose
 
     $secCode = ConvertTo-SecureString -String $PSCode -AsPlainText -Force
     $cred = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ($Name, $secCode)
@@ -677,7 +677,7 @@ function CreateTestModuleInLocalRepository
         $LocalRepository
     )
 
-    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'")
+    Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'") -Verbose
 
     # Return if the package already exists
     if (Test-path -path "$($script:Module.ModuleBase)\test\$($LocalRepository)\$($ModuleName).$($ModuleVersion).nupkg")

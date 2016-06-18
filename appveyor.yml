@@ -21,9 +21,13 @@ install:
 
 build_script:
 
-- ps: New-Item -Path "$Env:ProgramFiles\WindowsPowerShell\Modules\PackageManagementProviderResource" -ItemType Directory -Force  
+- ps: New-Item -Path "$Env:ProgramFiles\AppVeyor\BuildAgent\Modules\PackageManagementProviderResource" -ItemType Directory -Force  
 
-- ps: Copy-Item -Recurse "$env:APPVEYOR_BUILD_FOLDER\*" "$Env:ProgramFiles\WindowsPowerShell\Modules\PackageManagementProviderResource" -Force -Verbose
+- ps: Copy-Item -Recurse "$env:APPVEYOR_BUILD_FOLDER\*" "$Env:ProgramFiles\AppVeyor\BuildAgent\Modules\PackageManagementProviderResource" -Force -Verbose
+
+- ps: Get-Module PackageManagementProviderResource -ListAvailable
+
+- ps: Write-Verbose -Verbose "$env:PSModulepath"
 
 
 #---------------------------------#
@@ -32,12 +36,15 @@ build_script:
 
 test_script:
     - ps: |
+        Push-Location
+        cd $env:APPVEYOR_BUILD_FOLDER
         $testResultsFile = ".\TestsResults.xml"
         $res = Invoke-Pester -OutputFormat NUnitXml -OutputFile $testResultsFile -PassThru
         (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path $testResultsFile))
         if ($res.FailedCount -gt 0) {
             throw "$($res.FailedCount) tests failed."
         }
+        Pop-Location
 
 
 #---------------------------------#
