@@ -1,4 +1,4 @@
-#
+﻿#
 # Copyright (c) Microsoft Corporation.
 #
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
@@ -21,7 +21,7 @@ CompanyName = 'Microsoft Corporation'
 
 Description = 'Modules with DSC resources for the package management.'
 
-Copyright="Â© Microsoft Corporation. All rights reserved."
+Copyright="(c) Microsoft Corporation. All rights reserved."
 
 FunctionsToExport = '*'
 
