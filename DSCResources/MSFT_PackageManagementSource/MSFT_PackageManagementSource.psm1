@@ -295,11 +295,30 @@ function Set-TargetResource
         Write-Verbose -Message ($localizedData.StartRegisterPackageSource -f $($Name)) 
 
         if ($name -eq "psgallery")
-        {
-           $extractedArguments.Remove("Location")
+        {         
+            # In WMF 5.0 RTM, we are not able to register 'psgallery' package source. Thus let's try Set-PSRepository to see if we can
+            # update the registration. 
+            
+            # Before calling the Set-PSRepository cmdlet, we need to make sure the PSGallery already registered.
+
+            $psgallery = PackageManagement\Get-PackageSource -name $name -Location $SourceUri -ProviderName $ProviderName -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
+
+            if( $psgallery)
+            {
+                Set-PSRepository -Name $name -SourceLocation $SourceUri -InstallationPolicy $InstallationPolicy -ErrorVariable ev 
+            }
+            else
+            {
+                # The following works if you are running TP5 or later
+                $extractedArguments.Remove("Location")
+                PackageManagement\Register-PackageSource @extractedArguments -Force -ErrorVariable ev  
+
+            }
         }
-                                       
-        PackageManagement\Register-PackageSource @extractedArguments -Force -ErrorVariable ev  
+        else
+        {                                       
+            PackageManagement\Register-PackageSource @extractedArguments -Force -ErrorVariable ev  
+        }
             
         if($null -ne $ev -and $ev.Count -gt 0)
         {
