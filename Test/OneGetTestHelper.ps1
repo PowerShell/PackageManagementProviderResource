@@ -631,7 +631,8 @@ function CreateCredObject
     This is a helper function for the cmdlets testing where requires PSCredential
 
     #>
-
+        
+    [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("AvoidUsingConvertToSecureStringWithPlainText", "")]
     param(           
         [System.String]
         $Name,
