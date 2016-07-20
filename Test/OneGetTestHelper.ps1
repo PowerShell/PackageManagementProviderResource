@@ -632,7 +632,7 @@ function CreateCredObject
 
     #>
         
-    [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("AvoidUsingConvertToSecureStringWithPlainText", "")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingConvertToSecureStringWithPlainText", "")]
     param(           
         [System.String]
         $Name,
