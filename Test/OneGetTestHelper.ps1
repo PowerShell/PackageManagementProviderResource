@@ -681,7 +681,8 @@ function CreateTestModuleInLocalRepository
     Write-Verbose -Message ("Calling function '$($MyInvocation.mycommand)'") -Verbose
 
     # Return if the package already exists
-    if (Test-path -path "$($script:Module.ModuleBase)\test\$($LocalRepository)\$($ModuleName).$($ModuleVersion).nupkg")
+    $m = PowerShellGet\Find-Module -Name $ModuleName -Repository $LocalRepository  -RequiredVersion $ModuleVersion  -ErrorAction Ignore
+    if($m)
     {
         return
     }
@@ -698,6 +699,8 @@ function CreateTestModuleInLocalRepository
     # Create the module manifest
     Microsoft.PowerShell.Core\New-ModuleManifest -Path $modulePSD1Path -Description "$ModuleName" -ModuleVersion $ModuleVersion
 
+    
+    
     try
     {
         # Publish the module to your local repository

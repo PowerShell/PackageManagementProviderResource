@@ -109,8 +109,8 @@ Describe -Name "NugetPackage Get-TargetResource Basic Test" -Tags "BVT" {
             $result.Ensure | should be "Absent"  
         }
 
-        #Skip for the next WMF release for the bug fixes around MaximumVersion
-        It -skip "Get-TargetResource with MaximumVersion: Check Present" {
+        
+        It  "Get-TargetResource with MaximumVersion: Check Present" {
             
             Set-TargetResource -name "MyTestPackage" -DestinationPath $DestinationPath -RequiredVersion "12.0.1.1" -Ensure "Present" -Verbose
             Set-TargetResource -name "MyTestPackage" -DestinationPath $DestinationPath -RequiredVersion "12.0.1" -Ensure "Present" -Verbose
@@ -134,8 +134,8 @@ Describe -Name "NugetPackage Get-TargetResource Basic Test" -Tags "BVT" {
             $result.InstalledVersion | should be "15.2.1"  #Get-package will return the latest version
         }
 
-         #Skip for the next WMF release for the bug fixes around MaximumVersion
-        It -Skip "Get-TargetResource MinimumVersion and MaximumVersion: Check Present" {
+        
+        It  "Get-TargetResource MinimumVersion and MaximumVersion: Check Present" {
             
             Set-TargetResource -name "MyTestPackage" -DestinationPath $DestinationPath -RequiredVersion "12.0.1.1" -Ensure "Present" -Verbose
             Set-TargetResource -name "MyTestPackage" -DestinationPath $DestinationPath -RequiredVersion "12.0.1" -Ensure "Present" -Verbose

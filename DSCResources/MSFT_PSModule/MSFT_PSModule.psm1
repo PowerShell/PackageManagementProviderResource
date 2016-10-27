@@ -58,8 +58,8 @@ function Get-TargetResource
         [System.String]
         $RequiredVersion,
 
-        #[System.String]
-        #$MaximumVersion,
+        [System.String]
+        $MaximumVersion,
 
         [System.String]
         $MinimumVersion
@@ -69,7 +69,7 @@ function Get-TargetResource
     $ensure = 'Absent'
      
     $extractedArguments = ExtractArguments -FunctionBoundParameters $PSBoundParameters `
-                                           -ArgumentNames ("Name", "Repository", "MinimumVersion", "RequiredVersion")
+                                           -ArgumentNames ("Name", "Repository", "MinimumVersion", "MaximumVersion", "RequiredVersion")
 
     #Get the module with the right version and repository properties
     $modules = Get-RightModule @extractedArguments -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
@@ -181,8 +181,8 @@ function Test-TargetResource
         [System.String]
         $RequiredVersion,
 
-        #[System.String]
-        #$MaximumVersion,
+        [System.String]
+        $MaximumVersion,
 
         [System.String]
         $MinimumVersion
@@ -191,7 +191,7 @@ function Test-TargetResource
     Write-Debug -Message  "Calling Test-TargetResource"
 
     $extractedArguments = ExtractArguments -FunctionBoundParameters $PSBoundParameters `
-                                           -ArgumentNames ("Name", "Repository", "MinimumVersion", "RequiredVersion")
+                                           -ArgumentNames ("Name", "Repository", "MinimumVersion", "MaximumVersion", "RequiredVersion")
 
     $status = Get-TargetResource @extractedArguments
 
@@ -262,8 +262,8 @@ function Set-TargetResource
         [System.String]
         $RequiredVersion,
 
-        #[System.String]
-        #$MaximumVersion,
+        [System.String]
+        $MaximumVersion,
 
         [System.String]
         $MinimumVersion
@@ -281,12 +281,12 @@ function Set-TargetResource
        
         #Version check
         $extractedArguments = ExtractArguments -FunctionBoundParameters $PSBoundParameters `
-                                               -ArgumentNames ("MinimumVersion", "RequiredVersion")
+                                               -ArgumentNames ("MinimumVersion","MaximumVersion", "RequiredVersion")
 
         ValidateVersionArgument @extractedArguments 
 
         $extractedArguments = ExtractArguments -FunctionBoundParameters $PSBoundParameters `
-                                               -ArgumentNames ("Name","Repository", "MinimumVersion", "RequiredVersion") 
+                                               -ArgumentNames ("Name","Repository", "MinimumVersion", "MaximumVersion","RequiredVersion") 
         
         Write-Verbose -Message ($localizedData.StartFindmodule -f $($Name))
       
@@ -360,7 +360,7 @@ function Set-TargetResource
     {    
     
         $extractedArguments = ExtractArguments -FunctionBoundParameters $PSBoundParameters `
-                                            -ArgumentNames ("Name", "Repository", "MinimumVersion", "RequiredVersion")
+                                            -ArgumentNames ("Name", "Repository", "MinimumVersion", "MaximumVersion", "RequiredVersion")
 
     
         #Get the module with the right version and repository properties
