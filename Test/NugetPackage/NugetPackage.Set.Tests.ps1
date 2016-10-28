@@ -69,9 +69,9 @@ Describe -Name  "NugetPackage Set-TargetResource Basic Test" -Tags "BVT" {
             # User's installation policy is untrusted by default
             $result = MSFT_NugetPackage\Set-TargetResource -Name "MyTestPackage" -DestinationPath $DestinationPath -Source "NugetTestSourceName"
 
-            # Validate the package is installed. 2.1.3 is the latest in the local source
+            # Validate the package is installed. 15.2.1 is the latest in the local source
 
-            Test-Path -Path "$($DestinationPath)\MyTestPackage.15.2.1" | should be $false
+            Test-Path -Path "$($DestinationPath)\MyTestPackage.15.2.1" | should be $true
         }
     
  

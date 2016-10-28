@@ -28,8 +28,8 @@ Describe -Name "PSModule Set, Test-TargetResource Basic Test" -Tags "BVT"{
     BeforeEach {
 
         #Remove all left over files if exists
-        Remove-Item "$($InstallationFolder)\..\..\MyTestModule" -Recurse -Force  -ErrorAction SilentlyContinue      
-        Remove-Item "$($InstallationFolder)\..\MyTestModule" -Recurse -Force  -ErrorAction SilentlyContinue      
+        Remove-Item "$($script:InstallationFolder)\..\..\MyTestModule" -Recurse -Force  -ErrorAction SilentlyContinue      
+        Remove-Item "$($script:InstallationFolder)\..\MyTestModule" -Recurse -Force  -ErrorAction SilentlyContinue      
     }
 
     AfterEach {
@@ -104,6 +104,10 @@ Describe -Name "PSModule Set, Test-TargetResource Basic Test" -Tags "BVT"{
                 
                 $result| should be $true
 
+                MSFT_PSModule\Set-TargetResource -name "MyTestModule" -Ensure Absent -Verbose -Repository $LocalRepository
+                $result1 = MSFT_PSModule\Test-TargetResource -name "MyTestModule" -Repository $LocalRepository  -Ensure Absent
+                $result1 | should be $true
+
                 return
             }
            
@@ -127,11 +131,15 @@ Describe -Name "PSModule Set, Test-TargetResource Basic Test" -Tags "BVT"{
 
                 RegisterRepository -Name "LocalRepository3" -InstallationPolicy Untrusted -Ensure Present -SourceLocation $LocalRepositoryPath3 -PublishLocation $LocalRepositoryPath3
                 
+                $result1 = MSFT_PSModule\Test-TargetResource -name "MyTestModule" -Repository "LocalRepository2"  -Ensure "Present" -Verbose
+
+                $result1 | should be $false
+
                 # User's installation policy is untrusted
                 MSFT_PSModule\Set-TargetResource -name "MyTestModule" -Ensure "Present" -Verbose -Repository "LocalRepository2"
 
                 # The module from the trusted source should be installed
-                $result = MSFT_PSModule\Test-TargetResource -name "MyTestModule" -Repository "LocalRepository2"  -Ensure "Present"
+                $result = MSFT_PSModule\Test-TargetResource -name "MyTestModule" -Repository "LocalRepository2"  -Ensure "Present" -Verbose
                 
                 $result| should be $true
             }

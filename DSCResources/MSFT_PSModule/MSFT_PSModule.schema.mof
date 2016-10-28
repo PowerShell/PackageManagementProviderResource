@@ -7,6 +7,7 @@ class MSFT_PSModule : OMI_BaseResource
   [Write] String Repository;
   [Write,ValueMap{"Trusted", "Untrusted"},Values{"Trusted", "Untrusted"}] String InstallationPolicy;
   [Write] String RequiredVersion;
+  [Write] String MaximumVersion;
   [Write] String MinimumVersion;
   [Read] string Description;
   [Read] String InstalledVersion;

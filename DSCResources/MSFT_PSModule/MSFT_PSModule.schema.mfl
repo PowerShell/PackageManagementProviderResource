@@ -11,6 +11,7 @@ class MSFT_PSModule : OMI_BaseResource
   [Description("Whether the package is trusted or untrusted.\nTrusted {default}  \nUntrusted   \n") : Amended] String InstallationPolicy;
   [Description("The required version of the module.\n") : Amended] String RequiredVersion;
   [Description("The minimum version of the module.\n") : Amended] String MinimumVersion;
+  [Description("The maximum version of the module.\n") : Amended] String MaximumVersion;
   [Description("The brief description of the module.\n") : Amended] string Description;
   [Description("The version of the module that is installed.\n") : Amended] String InstalledVersion;
   [Description("The identifier of the module.\n") : Amended] String Guid;

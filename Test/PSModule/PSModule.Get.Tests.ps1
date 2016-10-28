@@ -50,7 +50,7 @@ Describe -Name  "PSModule Get-TargetResource Basic Tests" -Tags "BVT" {
             $result.Ensure | should be "Present"
         }
 
-    It -Skip "Get-TargetResource given the different versions of modules on the same repository: Check Present" {            
+    It  "Get-TargetResource given the different versions of modules on the same repository: Check Present" {            
            
             #Calling Set-TargetResource to install the module
             Set-TargetResource -name "MyTestModule" -Repository $LocalRepository -RequiredVersion "3.2.1" -Ensure "Present" -Verbose
@@ -66,8 +66,7 @@ Describe -Name  "PSModule Get-TargetResource Basic Tests" -Tags "BVT" {
             $result.InstalledVersion | should be "3.2.1"
             $result.InstallationPolicy | should be "Trusted"
             ($result.Author.Length -ne 0)  | should be $true 
-            $result.ModuleType | should be "Manifest"
-            $result.ModuleBase.StartsWith($InstallationFolder ) | should be $true         
+            $result.ModuleType | should be "Manifest"     
             ($result.Description.Length -ne 0)  | should be $true  
         }
 
@@ -95,7 +94,7 @@ Describe -Name  "PSModule Get-TargetResource Basic Tests" -Tags "BVT" {
             $result.Ensure | should be "Absent"  
         }
 
-    It -Skip "Get-TargetResource with MaximumVersion: Check Present" {
+    It  "Get-TargetResource with MaximumVersion: Check Present" {
             
             Set-TargetResource -name "MyTestModule" -Repository $LocalRepository -RequiredVersion "3.2.1" -Ensure "Present" -Verbose
             Set-TargetResource -name "MyTestModule" -Repository $LocalRepository -RequiredVersion "1.1" -Ensure "Present" -Verbose
@@ -107,7 +106,7 @@ Describe -Name  "PSModule Get-TargetResource Basic Tests" -Tags "BVT" {
             $result.InstalledVersion | should be "1.1.2"  #1.1.2 is the only module -le maximumversion 
         }
 
-    It -Skip "Get-TargetResource MinimumVersion: Check Present" {
+    It  "Get-TargetResource MinimumVersion: Check Present" {
             
             Set-TargetResource -name "MyTestModule" -Repository $LocalRepository -RequiredVersion "1.1.2" -Ensure "Present" -Verbose
             Set-TargetResource -name "MyTestModule" -Repository $LocalRepository -RequiredVersion "1.1"   -Ensure "Present" -Verbose
@@ -119,7 +118,7 @@ Describe -Name  "PSModule Get-TargetResource Basic Tests" -Tags "BVT" {
             $result.InstalledVersion | should be "3.2.1"  #Here two modules: 1.1.1 and 3.2.1 are qualified. Get-Target will return the latest
         }
 
-    It -Skip "Get-TargetResource MinimumVersion and MaximumVersion: Check Present" {
+    It  "Get-TargetResource MinimumVersion and MaximumVersion: Check Present" {
             
             Set-TargetResource -name "MyTestModule" -Repository $LocalRepository -RequiredVersion "1.1.2" -Ensure "Present" -Verbose
             Set-TargetResource -name "MyTestModule" -Repository $LocalRepository -RequiredVersion "1.1" -Ensure "Present" -Verbose
