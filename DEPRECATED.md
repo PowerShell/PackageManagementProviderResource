@@ -1,0 +1,1 @@
+This module has been deprecated. This module has been merged into PackageManagement, found at: oneget.org
