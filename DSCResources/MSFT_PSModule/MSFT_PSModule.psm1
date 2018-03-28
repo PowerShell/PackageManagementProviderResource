@@ -42,6 +42,17 @@ function Get-TargetResource
 
     .PARAMETER MinimumVersion
     Provides the minimum version of the module you want to install or uninstall.
+
+    .PARAMETER Force
+    Forces the installation of modules. If a module of the same name and version already exists on the computer, 
+    this parameter overwrites the existing module with one of the same name that was found by the command.
+
+    .PARAMETER AllowClobber
+    Allows the installation of modules regardless of if other existing module on the computer have cmdlets
+    of the same name
+
+    .PARAMETER SkipPublisherCheck
+    Allows the installation of modules that have not been catalog signed
     #>
 
     [CmdletBinding()]
@@ -62,7 +73,19 @@ function Get-TargetResource
         $MaximumVersion,
 
         [System.String]
-        $MinimumVersion
+        $MinimumVersion,
+
+        [Parameter()]
+        [Switch]
+        $Force,
+
+        [Parameter()]
+        [Switch]
+        $AllowClobber,
+
+        [Parameter()]
+        [Switch]
+        $SkipPublisherCheck
     )
 
     #Initialize the $Ensure variable
@@ -158,6 +181,17 @@ function Test-TargetResource
 
     .PARAMETER MinimumVersion
     Provides the minimum version of the module you want to install or uninstall.
+
+    .PARAMETER Force
+    Forces the installation of modules. If a module of the same name and version already exists on the computer, 
+    this parameter overwrites the existing module with one of the same name that was found by the command.
+
+    .PARAMETER AllowClobber
+    Allows the installation of modules regardless of if other existing module on the computer have cmdlets
+    of the same name
+
+    .PARAMETER SkipPublisherCheck
+    Allows the installation of modules that have not been catalog signed
     #>
     [CmdletBinding()]
     [OutputType([System.Boolean])]
@@ -185,7 +219,19 @@ function Test-TargetResource
         $MaximumVersion,
 
         [System.String]
-        $MinimumVersion
+        $MinimumVersion,
+
+        [Parameter()]
+        [Switch]
+        $Force,
+
+        [Parameter()]
+        [Switch]
+        $AllowClobber,
+
+        [Parameter()]
+        [Switch]
+        $SkipPublisherCheck
     )
 
     Write-Debug -Message  "Calling Test-TargetResource"
@@ -239,6 +285,17 @@ function Set-TargetResource
 
     .PARAMETER MinimumVersion
     Provides the minimum version of the module you want to install or uninstall.
+
+    .PARAMETER Force
+    Forces the installation of modules. If a module of the same name and version already exists on the computer, 
+    this parameter overwrites the existing module with one of the same name that was found by the command.
+
+    .PARAMETER AllowClobber
+    Allows the installation of modules regardless of if other existing module on the computer have cmdlets
+    of the same name
+
+    .PARAMETER SkipPublisherCheck
+    Allows the installation of modules that have not been catalog signed
     #>
 
     [CmdletBinding()]
@@ -266,7 +323,19 @@ function Set-TargetResource
         $MaximumVersion,
 
         [System.String]
-        $MinimumVersion
+        $MinimumVersion,
+
+        [Parameter()]
+        [Switch]
+        $Force,
+
+        [Parameter()]
+        [Switch]
+        $AllowClobber,
+
+        [Parameter()]
+        [Switch]
+        $SkipPublisherCheck
     )
 
 
@@ -283,11 +352,11 @@ function Set-TargetResource
         $extractedArguments = ExtractArguments -FunctionBoundParameters $PSBoundParameters `
                                                -ArgumentNames ("MinimumVersion","MaximumVersion", "RequiredVersion")
 
-        ValidateVersionArgument @extractedArguments 
+        ValidateVersionArgument @extractedArguments
 
         $extractedArguments = ExtractArguments -FunctionBoundParameters $PSBoundParameters `
                                                -ArgumentNames ("Name","Repository", "MinimumVersion", "MaximumVersion","RequiredVersion") 
-        
+ 
         Write-Verbose -Message ($localizedData.StartFindmodule -f $($Name))
       
      
@@ -324,15 +393,24 @@ function Set-TargetResource
         if ($trusted)
         {
             Write-Verbose -Message ($localizedData.StartInstallModule -f $Name, $moduleFound.Version.toString(), $moduleFound.Repository )
-            $moduleFound |  PowerShellGet\Install-Module -ErrorVariable ev
+            
+            #Extract the installation options
+            $extractedSwitches = ExtractArguments -FunctionBoundParameters $PSBoundParameters `
+                                                   -ArgumentNames ("Force","AllowClobber", "SkipPublisherCheck")
+
+            $moduleFound |  PowerShellGet\Install-Module @extractedSwitches -ErrorVariable ev
         }
         #The repository is untrusted but user's installation policy is trusted, so we install it with a warning
         elseif ($InstallationPolicy -ieq 'Trusted')
         {           
             Write-Warning -Message ($localizedData.InstallationPolicyWarning -f $Name, $modules[0].Repository, $InstallationPolicy)
 
+            #Extract the installation options (user has specified trusted trusted so we always force)
+            $extractedSwitches = ExtractArguments -FunctionBoundParameters $PSBoundParameters `
+                                                   -ArgumentNames ("AllowClobber", "SkipPublisherCheck")
+
             #if all the repositories are untrusted, we choose the first one
-            $modules[0] |  PowerShellGet\Install-Module -Force  -ErrorVariable ev
+            $modules[0] |  PowerShellGet\Install-Module @extractedSwitches -Force  -ErrorVariable ev
         }
         #Both user and repository is untrusted
         else
