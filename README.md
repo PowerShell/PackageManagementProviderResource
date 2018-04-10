@@ -1,4 +1,19 @@
 
+<br/>
+<br/>
+
+
+>`Announcement`
+
+This repo has been deprecated. The PackageManagementProviderResource module has been merged to [PackageManagement]( https://github.com/OneGet/oneget/tree/WIP/src/Microsoft.PackageManagement.DscResources).  Please use https://github.com/OneGet/oneget going forward. Thank you!
+ 
+
+<br/>
+<br/>
+
+
+
+
 [![Build status](https://ci.appveyor.com/api/projects/status/k3h1hypknt4vnyy0/branch/master?svg=true)](https://ci.appveyor.com/project/PowerShell/PackageManagementProviderResource/branch/master)
 
 
