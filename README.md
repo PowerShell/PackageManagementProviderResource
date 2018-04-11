@@ -149,6 +149,10 @@ Please check out common DSC Resources [contributing guidelines](https://github.c
     <td>Specifies the minimum version of the module you want to install or uninstall.</td>
     </tr>
     <tr>
+    <td>AllowClobber</td>
+    <td>Allow installation of the module when duplicate commands exist from a previously installed Module.</td>
+    </tr>
+    <tr>
     <td>Repository</td>
     <td>Specifies the name of the module source repository where the module can found.</td>
     </tr>
