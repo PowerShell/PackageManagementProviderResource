@@ -12,6 +12,7 @@ class MSFT_PSModule : OMI_BaseResource
   [Description("The required version of the module.\n") : Amended] String RequiredVersion;
   [Description("The minimum version of the module.\n") : Amended] String MinimumVersion;
   [Description("The maximum version of the module.\n") : Amended] String MaximumVersion;
+  [Description("Allow installation of the module when duplicate commands exist from a previously installed Module.\n") : Amended] Boolean AllowClobber;
   [Description("The brief description of the module.\n") : Amended] string Description;
   [Description("The version of the module that is installed.\n") : Amended] String InstalledVersion;
   [Description("The identifier of the module.\n") : Amended] String Guid;

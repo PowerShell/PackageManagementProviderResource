@@ -42,6 +42,9 @@ function Get-TargetResource
 
     .PARAMETER MinimumVersion
     Provides the minimum version of the module you want to install or uninstall.
+        
+    .PARAMETER AllowClobber
+    Allow installation of the module when duplicate commands exist from a previously installed Module.  
     #>
 
     [CmdletBinding()]
@@ -62,7 +65,10 @@ function Get-TargetResource
         $MaximumVersion,
 
         [System.String]
-        $MinimumVersion
+        $MinimumVersion,
+
+        [System.Boolean]
+        $AllowClobber
     )
 
     #Initialize the $Ensure variable
@@ -158,6 +164,9 @@ function Test-TargetResource
 
     .PARAMETER MinimumVersion
     Provides the minimum version of the module you want to install or uninstall.
+        
+    .PARAMETER AllowClobber
+    Allow installation of the module when duplicate commands exist from a previously installed Module.  
     #>
     [CmdletBinding()]
     [OutputType([System.Boolean])]
@@ -185,7 +194,10 @@ function Test-TargetResource
         $MaximumVersion,
 
         [System.String]
-        $MinimumVersion
+        $MinimumVersion,
+
+        [System.Boolean]
+        $AllowClobber
     )
 
     Write-Debug -Message  "Calling Test-TargetResource"
@@ -239,6 +251,9 @@ function Set-TargetResource
 
     .PARAMETER MinimumVersion
     Provides the minimum version of the module you want to install or uninstall.
+
+    .PARAMETER AllowClobber
+    Allow installation of the module when duplicate commands exist from a previously installed Module.      
     #>
 
     [CmdletBinding()]
@@ -266,7 +281,10 @@ function Set-TargetResource
         $MaximumVersion,
 
         [System.String]
-        $MinimumVersion
+        $MinimumVersion,
+
+        [System.Boolean]
+        $AllowClobber
     )
 
 
@@ -319,20 +337,36 @@ function Set-TargetResource
             }        
         }
 
+        if ($PSBoundParameters.AllowClobber -eq $true)
+        {
+            $Install = @{
+                    ErrorVariable =  'ev'
+                    AllowClobber = $true
+                }
+        }
+        else 
+        {
+            $Install = @{
+                ErrorVariable =  'ev'
+            }
+        }
         
         #The respository is trusted, so we install it
         if ($trusted)
         {
             Write-Verbose -Message ($localizedData.StartInstallModule -f $Name, $moduleFound.Version.toString(), $moduleFound.Repository )
-            $moduleFound |  PowerShellGet\Install-Module -ErrorVariable ev
+            $moduleFound |  PowerShellGet\Install-Module @Install
         }
         #The repository is untrusted but user's installation policy is trusted, so we install it with a warning
         elseif ($InstallationPolicy -ieq 'Trusted')
         {           
             Write-Warning -Message ($localizedData.InstallationPolicyWarning -f $Name, $modules[0].Repository, $InstallationPolicy)
 
+            #Add Force to override install policy
+            $Install.Add('Force', $true)
+            
             #if all the repositories are untrusted, we choose the first one
-            $modules[0] |  PowerShellGet\Install-Module -Force  -ErrorVariable ev
+            $modules[0] |  PowerShellGet\Install-Module @Install
         }
         #Both user and repository is untrusted
         else

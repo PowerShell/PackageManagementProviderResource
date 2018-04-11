@@ -9,6 +9,7 @@ class MSFT_PSModule : OMI_BaseResource
   [Write] String RequiredVersion;
   [Write] String MaximumVersion;
   [Write] String MinimumVersion;
+  [Write] Boolean AllowClobber;
   [Read] string Description;
   [Read] String InstalledVersion;
   [Read] String Guid;
